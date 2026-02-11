@@ -209,13 +209,31 @@
           </li>
 
 
-          <li>
-            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/' %}active{% endif %}"
-               href="/bulletins/">
-              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
-              <span class="">Bulletins</span>
-            </a>
-          </li>
+  
+		  <li class="group">
+  <button class="menu-toggle"
+          aria-expanded="false"
+          aria-controls="submenu-bulletins">
+    <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
+    <span>Bulletins</span>
+    <span class="chevron" aria-hidden="true">▸</span>
+  </button>
+  <ul id="submenu-bulletins" class="submenu" hidden>
+    <li>
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/mensuels/' %}active{% endif %}"
+         href="/bulletins/mensuels/">
+        Mensuels
+      </a>
+    </li>
+    <li>
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/annuels/' %}active{% endif %}"
+         href="/bulletins/annuels/">
+        Annuels
+      </a>
+    </li>
+  </ul>
+</li>
+``
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/dsn/' %}active{% endif %}"
@@ -258,5 +276,53 @@
       </main>
 
     </div>
+	
+<script>
+  (function () {
+    const toggles = document.querySelectorAll('.menu-toggle');
+
+    // Toggle simple
+    toggles.forEach(btn => {
+      const submenuId = btn.getAttribute('aria-controls');
+      const submenu = document.getElementById(submenuId);
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        submenu.hidden = expanded;
+      });
+    });
+
+    // Ouverture automatique si une entrée active est dans un sous-menu
+    const activeLinks = document.querySelectorAll('.submenu a.sc-fqkvVR.dMxrQl.active');
+    activeLinks.forEach(link => {
+      const ul = link.closest('.submenu');
+      if (!ul) return;
+      const btn = document.querySelector(`.menu-toggle[aria-controls="${ul.id}"]`);
+      if (btn) {
+        btn.setAttribute('aria-expanded', 'true');
+        ul.hidden = false;
+      }
+    });
+
+    // (Optionnel) Accordéon : décommenter pour n’avoir qu’un groupe ouvert à la fois
+    /*
+    document.querySelectorAll('.menu-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.getAttribute('aria-expanded') === 'true') {
+          // on vient d'ouvrir: fermer les autres
+          document.querySelectorAll('.menu-toggle').forEach(other => {
+            if (other !== btn) {
+              const id = other.getAttribute('aria-controls');
+              const ul = document.getElementById(id);
+              other.setAttribute('aria-expanded', 'false');
+              if (ul) ul.hidden = true;
+            }
+          });
+        }
+      });
+    });
+    */
+  })();
+</script>
   </body>
 </html>
