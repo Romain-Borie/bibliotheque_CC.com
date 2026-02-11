@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Accueil
+permalink: /
 ---
 
 # Simulateur retraite
