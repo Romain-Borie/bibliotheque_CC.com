@@ -27,37 +27,100 @@
       /* ===== TITRE ===== */
       .site-title {
         color: #fff;
-        font-size: 12.0pt; /* taille du titre */
-        letter-spacing: .2;                        /* garde une bonne lisibilité */
-        letter-spacing: 1px;
+        font-size: 12.0pt; /* taille du titre (tu peux garder/ajuster) */
+        letter-spacing: 1px; /* (j'ai supprimé la ligne en double .2 sans unité) */
         text-transform: none;
         font-family: Verdana;
         font-weight: 500;
+        margin: 0;
       }
 
-      /* ===== Contenu ===== */
+      /* ===== Contenu global ===== */
       html, body {
         margin: 0;
         background: #fff;
         color: #111;
         font-family: Verdana;
-        font-size: 12.0pt;     /* ✅ TAILLE DU TEXTE DU SITE */
-        line-height: 1.6;   /* ✅ CONFORT DE LECTURE */
+        font-size: 12.0pt;     /* ✅ TAILLE DU TEXTE DU SITE (laisse comme tu veux) */
+        line-height: 1.6;      /* ✅ CONFORT DE LECTURE (corrigé) */
       }
 
+      /* ====== LAYOUT PRINCIPAL (NEW) ====== */
+      .app {
+        display: flex;                  /* sidebar + contenu côte à côte */
+        min-height: calc(100vh - 0px);  /* occupe la hauteur restante sous la topbar sticky */
+      }
+
+      /* ====== SIDEBAR (NEW) ====== */
+      aside.sidebar {
+        width: 240px;                   /* largeur fixe de la barre gauche */
+        background: #fff;
+        border-right: 1px solid #e0e0e0;
+        padding: 12px 0;
+        position: sticky;               /* reste visible au scroll */
+        top: calc( /* hauteur visuelle du header */ 0px );
+        align-self: flex-start;         /* pour sticky */
+        height: calc(100vh - 0px);
+        overflow-y: auto;
+      }
+
+      .menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .menu li { margin: 2px 0; }
+
+      .menu a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .menu a:hover {
+        background: #f4f4f4;
+      }
+
+      /* Élément actif (NEW) - on ajoute .active manuellement, ou on le fera via Liquid plus tard */
+      .menu a.active {
+        background: #1f8f4e;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .icon {
+        width: 18px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      /* ====== CONTENU PRINCIPAL (NEW) ====== */
       main.content {
+        flex: 1;                /* prend tout l’espace restant */
         padding: 24px 18px 56px;
         background: #fff;
       }
 
-      /* Responsive */
-      @media (max-width: 640px) {
-        header.topbar .topbar-inner {
-          height: 72px;
-        }
-        .site-title {
-          font-size: 26px;
-          letter-spacing: 1px;
+      main.content h1 { margin-top: 0; }
+
+      /* ===== Responsive simple ===== */
+      @media (max-width: 900px) {
+        aside.sidebar { width: 200px; }
+      }
+
+      @media (max-width: 700px) {
+        .app { flex-direction: column; }
+        aside.sidebar {
+          width: 100%;
+          border-right: none;
+          border-bottom: 1px solid #e0e0e0;
+          position: static;
+          height: auto;
         }
       }
     </style>
@@ -67,13 +130,33 @@
     <!-- Barre horizontale noire -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
-        <div class="site-title">Bibliothèque de l'équipe CC</div>
+        <h1 class="site-title">Bibliothèque de l'équipe CC</h1>
       </div>
     </header>
 
-    <!-- Contenu des pages -->
-    <main class="content" role="main">
-      {{ content }}
-    </main>
+    <!-- LAYOUT global : SIDEBAR + CONTENU -->
+    <div class="app">
+
+      <!-- SIDEBAR GAUCHE (NEW) -->
+      <aside class="sidebar" role="navigation" aria-label="Menu latéral">
+        <ul class="menu">
+          <li>#<span class="icon">🏠</span> Tableau de bord</a></li>
+          <li>#<span class="icon">📰</span> Actualités CCN</a></li>
+          <li>#<span class="icon">👥</span> Salariés</a></li>
+          <li>#<span class="icon">📅</span> Absences</a></li>
+          <li>#<span class="icon">📄</span> Bulletins</a></li>
+          <li>#<span class="icon">🧾</span> DSN</a></li>
+          <li>#<span class="icon">🧩</span> Modules</a></li>
+          <li>#<span class="icon">📊</span> États et déclarations</a></li>
+          <li>#<span class="icon">✅</span> États de contrôle</a></li>
+        </ul>
+      </aside>
+
+      <!-- CONTENU DES PAGES -->
+      <main class="content" role="main">
+        {{ content }}
+      </main>
+
+    </div>
   </body>
 </html>
