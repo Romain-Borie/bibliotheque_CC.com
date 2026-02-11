@@ -110,6 +110,54 @@
           height: auto;
         }
       }
+
+	/* ===== Groupes avec sous-menus ===== */
+.menu .group {
+  margin: 4px 0;
+}
+
+/* Bouton de groupe (même gabarit visuel que tes liens) */
+.menu-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  color: #333;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  border-left: 3px solid transparent;
+  border-radius: 0;    /* garde l’aspect “lien” */
+}
+.menu-toggle:hover { background: #f4f4f4; }
+.menu-toggle:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
+
+/* Chevrons indicateurs */
+.menu-toggle .chevron {
+  margin-left: auto;
+  transition: transform .2s ease;
+}
+.menu-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+
+/* Sous-menu (caché par défaut via [hidden]) */
+.submenu {
+  list-style: none;
+  margin: 2px 0 6px 0;
+  padding: 0 0 0 20px; /* indentation visuelle */
+  border-left: 2px solid #eef2f7;
+}
+.submenu li a.sc-fqkvVR.dMxrQl { padding-left: 8px; }
+
+/* Actif (hérite de ton style actif) */
+.submenu a.sc-fqkvVR.dMxrQl.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
     </style>
   </head>
 
