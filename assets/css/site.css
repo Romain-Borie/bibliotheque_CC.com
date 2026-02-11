@@ -1,22 +1,44 @@
-/* ----- Styles du header uniquement ----- */
-.topbar {
+/* ===== Header : barre noire + logo (plus grand) ===== */
+header.topbar {
   position: sticky; top: 0; z-index: 1000;
-  background: #000;            /* NOIR uniquement pour la barre */
+  background: #000;                      /* noir UNIQUEMENT pour la barre */
   border-bottom: 1px solid #1a1a1a;
 }
-.topbar-inner {
-  height: 76px; padding: 8px 16px;
+
+header.topbar .topbar-inner {
+  height: 88px;                          /* ↑ barre un peu plus haute */
+  padding: 8px 16px;
   display: flex; align-items: center; justify-content: center;
 }
-.brand-img {
-  height: 56px; width: auto; display: block; object-fit: contain;
-}
-@media (max-width: 640px) {
-  .topbar-inner { height: 64px; }
-  .brand-img    { height: 44px; }
+
+header.topbar .brand-img {
+  height: 72px;                          /* ↑ logo plus grand */
+  max-width: min(90vw, 960px);           /* évite qu’il déborde sur petits écrans */
+  width: auto; display: block; object-fit: contain;
 }
 
-/* ----- Contenu de page : fond BLANC ----- */
-body { margin: 0; background: #fff; color: #111;
-       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans"; }
-.content { padding: 24px 18px 56px; }
+/* Responsive : réduit légèrement le header en mobile */
+@media (max-width: 640px) {
+  header.topbar .topbar-inner { height: 72px; }
+  header.topbar .brand-img { height: 56px; }
+}
+
+/* ===== Contenu : fond BLANC, texte sombre =====
+   On met une spécificité plus forte pour écraser les thèmes sombres */
+html body {
+  background: #fff !important;           /* force le fond blanc sur toute la page */
+  color: #111 !important;                /* texte sombre */
+}
+
+/* Si ton layout entoure le contenu dans <main class="content"> */
+main.content {
+  background: #fff !important;
+  color: #111 !important;
+  padding: 24px 18px 56px;
+}
+
+/* Si le thème utilise un conteneur spécifique (ex. .page-content, .wrapper, .post) */
+.page-content, .wrapper, .post, .container, .main, .content-area {
+  background: #fff !important;
+  color: #111 !important;
+}
