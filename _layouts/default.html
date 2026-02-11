@@ -238,21 +238,26 @@
   </button>
 
   <ul id="submenu-bulletins" class="submenu" {% unless page.url contains '/bulletins/' %}hidden{% endunless %}>
-    <!-- Optionnel: page index /bulletins/ -->
+    <!-- Optionnel : entrée “Vue d’ensemble” si tu as /bulletins/ -->
     <!--
     <li>
-      /bulletins/
+      <a class="sc-fqkvVR dMxrQl {% if page.url == '/bulletins/' or page.url == '/bulletins/index.html' %}active{% endif %}"
+         href="/bulletins/">
         Vue d’ensemble
       </a>
     </li>
     -->
+
     <li>
-      /bulletins/mensuels/
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/mensuels/' %}active{% endif %}"
+         href="/bulletins/mensuels/">
         Mensuels
       </a>
     </li>
+
     <li>
-      /bulletins/annuels/
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/annuels/' %}active{% endif %}"
+         href="/bulletins/annuels/">
         Annuels
       </a>
     </li>
