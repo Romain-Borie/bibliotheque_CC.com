@@ -5,26 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | escape }}</title>
 
-    <!-- Feuille de style: DOIT pointer vers un .css (pas du HTML) -->
-    <link rel="stylesheet" href="/assets/css/site.css?v=3">
-  </head>
-  <body>
+    <!-- Styles INLINE (stables, pas de problème de cache/CSS) -->
+    <style>
+      /* ===== Barre noire ===== */
+      header.topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #000;
+        border-bottom: 1px solid #1a1a1a;
+      }
 
-    <!-- Barre horizontale noire avec le logo -->
+      header.topbar .topbar-inner {
+        height: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ===== TITRE ===== */
+      .site-title {
+        color: #fff;
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+
+      /* ===== Contenu ===== */
+      html, body {
+        margin: 0;
+        background: #fff;
+        color: #111;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      }
+
+      main.content {
+        padding: 24px 18px 56px;
+        background: #fff;
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        header.topbar .topbar-inner {
+          height: 72px;
+        }
+        .site-title {
+          font-size: 26px;
+          letter-spacing: 1px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Barre horizontale noire -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
-        <img
-          id="logo-cc"
-          src="/assets/img/banner-cc.png?v=3"
-          alt="CC — Bibliothèque & feu de cheminée"
-          class="brand-img"
-        >
+        <div class="site-title">Bibliothèque de l'équipe CC</div>
       </div>
     </header>
 
+    <!-- Contenu des pages -->
     <main class="content" role="main">
       {{ content }}
     </main>
-
   </body>
 </html>
