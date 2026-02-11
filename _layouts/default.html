@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | escape }}</title>
 
-    <!-- 1) Charger la feuille de style avec une BALISE <link> -->
+    <!-- Lien vers TA feuille de styles (doit pointer vers un .css, pas du HTML) -->
     <link rel="stylesheet" href="/assets/css/site.css">
   </head>
   <body>
 
-    <!-- 2) Barre horizontale noire avec le logo (BALISE <img>) -->
+    <!-- Barre horizontale noire avec le logo -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
-        <img src="/assets/img/banner-cc.png"
-             alt="CC — Bibliothèque & feu de cheminée"
-             class="brand-img">
+        <img
+          src="/assets/img/banner-cc.png"
+          alt="CC — Bibliothèque et feu de cheminée"
+          class="brand-img">
       </div>
     </header>
 
-    <!-- 3) Contenu des pages -->
+    <!-- Contenu de chaque page -->
     <main class="content" role="main">
       {{ content }}
     </main>
