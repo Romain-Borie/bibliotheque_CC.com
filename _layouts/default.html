@@ -158,6 +158,16 @@
   border-left-color: #156d3b;
   font-weight: 600;
 }
+
+
+/* Actif pour le bouton de groupe */
+.menu-toggle.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
+
     </style>
   </head>
 
@@ -210,15 +220,26 @@
 
 
   
-		  <li class="group">
-  <button class="menu-toggle"
-          aria-expanded="false"
+
+<li class="group">
+  <button class="menu-toggle {% if page.url contains '/bulletins/' %}active{% endif %}"
+          aria-expanded="{% if page.url contains '/bulletins/' %}true{% else %}false{% endif %}"
           aria-controls="submenu-bulletins">
     <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
     <span>Bulletins</span>
     <span class="chevron" aria-hidden="true">▸</span>
   </button>
-  <ul id="submenu-bulletins" class="submenu" hidden>
+
+  <ul id="submenu-bulletins" class="submenu" {% unless page.url contains '/bulletins/' %}hidden{% endunless %}>
+    <!-- (Optionnel) Vue d’ensemble si tu as /bulletins/ -->
+    <!--
+    <li>
+      <a class="sc-fqkvVR dMxrQl {% if page.url == '/bulletins/' %}active{% endif %}"
+         href="/bulletins/">
+        Vue d’ensemble
+      </a>
+    </li>
+    -->
     <li>
       <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/mensuels/' %}active{% endif %}"
          href="/bulletins/mensuels/">
