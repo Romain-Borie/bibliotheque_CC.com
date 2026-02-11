@@ -13,7 +13,7 @@ header.topbar .topbar-inner{
 
 /* >>> Ajuste la TAILLE du logo ici <<< */
 header.topbar .brand-img{
-  height: 120px;                       /* monte à 140px, 160px si tu veux plus grand */
+  height: 160px;                       /* monte à 140px, 160px si tu veux plus grand */
   width: auto;
   display: block;
   object-fit: contain;
