@@ -1,0 +1,7 @@
+title: Les astuces de Romain
+description: Divers Astuces pour l'équipe CC
+
+remote_theme: pages-themes/cayman@v0.2.0
+
+plugins:
+  - jekyll-remote-theme
