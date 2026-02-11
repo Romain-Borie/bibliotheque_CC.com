@@ -174,6 +174,77 @@
   color: inherit;
 }
 
+/* ===== Flyout à droite (ouverture au survol/focus) ===== */
+.has-flyout { position: relative; }  /* référence de positionnement */
+
+/* Déclencheur (look proche de tes liens) */
+.group-trigger {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  border-left: 3px solid transparent;
+  cursor: default;
+}
+.group-trigger:hover { background: #f4f4f4; }
+.group-trigger:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
+.group-trigger .chevron { margin-left: auto; }
+
+/* Le flyout est masqué par défaut */
+.has-flyout .flyout {
+  position: absolute;
+  top: 0; left: 100%;            /* à droite de la sidebar */
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-radius: 6px;
+  padding: 6px 0;
+  list-style: none;
+  margin: 0;
+  display: none;
+  z-index: 1001;
+}
+
+/* Items du flyout : réutilise ta classe de lien */
+.has-flyout .flyout a.sc-fqkvVR.dMxrQl {
+  display: block;
+  padding: 8px 14px;
+  border-left: 3px solid transparent;
+  white-space: nowrap;
+}
+
+/* OUVERTURE : survol de l'item parent ou focus clavier (accessibilité) */
+.has-flyout:hover > .flyout,
+.has-flyout:focus-within > .flyout {
+  display: block;
+}
+
+/* État "actif" (reprend tes styles)  */
+.has-flyout .flyout a.sc-fqkvVR.dMxrQl.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
+
+/* Si on est sur une page Simulateur, surligne le trigger (SSR via Liquid) */
+{% if page.url contains '/simulateur/' %}
+.has-flyout .group-trigger {
+  background: #1f8f4e; color: #fff; border-left-color: #156d3b; font-weight: 600;
+}
+.has-flyout .group-trigger .chevron { color: inherit; }
+{% endif %}
+
+/* Mobile : le flyout se replie sous l'item (pas à droite, plus pratique au doigt) */
+@media (max-width: 700px) {
+  .has-flyout .flyout {
+    position: static;
+    border: 0; box-shadow: none;
+    border-left: 2px solid #eef2f7;
+    margin-left: 20px;
+    display: block; /* visible au toucher sans hover */
+  }
+}
+
     </style>
   </head>
 
@@ -225,46 +296,30 @@
           </li>
 
 
-<!--Menu Simulateur-->
-
-<li class="group">
-  <button
-    class="menu-toggle {% if page.url contains '/simulateur/' %}active{% endif %}"
-    aria-expanded="{% if page.url contains '/simulateur/' %}true{% else %}false{% endif %}"
-    aria-controls="submenu-simulateur">
+<!-- Menu Simulateur (flyout) -->
+<li class="group has-flyout">
+  <!-- Déclencheur : s'ouvre au survol ou focus clavier -->
+  <div class="group-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
     <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
     <span>Simulateur</span>
     <span class="chevron" aria-hidden="true">▸</span>
-  </button>
+  </div>
 
-  <ul id="submenu-simulateur" class="submenu" {% unless page.url contains '/simulateur/' %}hidden{% endunless %}>
-    <!-- Optionnel : entrée “Vue d’ensemble” si tu as /bulletins/ -->
-    <!--
-    <li>
-      <a class="sc-fqkvVR dMxrQl {% if page.url == '/bulletins/' or page.url == '/bulletins/index.html' %}active{% endif %}"
-         href="/bulletins/">
-        Vue d’ensemble
+  <!-- Sous-menu flyout, affiché à droite -->
+  <ul class="flyout" role="menu" aria-label="Sous-menu Simulateur">
+    <li role="none">
+      {{ 
+        <span role="menuitem">Indemnité de départ à la retraite</span>
       </a>
     </li>
-    -->
-
-    <li>
-      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/retraite/' %}active{% endif %}"
-         href="/simulateur/retraite/">
-        Indemnité de départ à la retraite
-      </a>
-    </li>
-
-    <li>
-      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/divers/' %}active{% endif %}"
-         href="/simulateur/divers/">
-        Divers
+    <li role="none">
+      {{ 
+        <span role="menuitem">Divers</span>
       </a>
     </li>
   </ul>
 </li>
-
-<!--Fin Menu Simulateur-->
+<!-- Fin Menu Simulateur -->
 
 
           <li>
@@ -337,6 +392,27 @@
       }
     });
   })();
+</script>
+
+<script>
+  document.querySelectorAll('.has-flyout').forEach(group => {
+    const trig = group.querySelector('.group-trigger');
+    const fly  = group.querySelector('.flyout');
+
+    const open  = () => trig.setAttribute('aria-expanded','true');
+    const close = () => trig.setAttribute('aria-expanded','false');
+
+    group.addEventListener('mouseenter', open);
+    group.addEventListener('mouseleave', close);
+    trig.addEventListener('focus', open);
+    fly.addEventListener('focusin', open);
+    fly.addEventListener('focusout', () => {
+      if (!group.contains(document.activeElement)) close();
+    });
+
+    // Au chargement : si un lien du flyout est actif, ouvre
+    if (fly.querySelector('a.active')) open();
+  });
 </script>
 
 
