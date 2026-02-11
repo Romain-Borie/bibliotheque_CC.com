@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur calcul indemnité de retraite</title>
+<style>
+  :root { --green:#0a7c2f; --green-2:#096b29; --green-bg:#e9f7ee; --yellow:#fff7c2; --yellow-b:#e6d87a; }
+  body { font-family: Segoe UI, Roboto, Arial, sans-serif; margin: 24px; color: #222; line-height:1.4; }
+  h1 { font-size: 1.8rem; margin: 0 0 6px; }
+  h2 { font-size: 1.3rem; margin: 0 0 14px; color:#555; }
+  h3.title-green { color: var(--green); background: var(--green-bg); padding: 6px 10px; border-left: 4px solid var(--green); margin: 16px 0 8px; }
+  .grid { display:flex; flex-wrap:wrap; gap: 12px; align-items:flex-end; }
+  label { display:inline-block; }
+  input[type="number"] { padding:6px; border:1px solid #bbb; border-radius:6px; width:160px; }
+  fieldset { border:1px solid #ddd; border-radius:6px; padding:8px 12px; margin-top:10px; }
+  legend { font-weight:600; }
+  .btn { padding:8px 12px; border:1px solid var(--green); color:#fff; background:var(--green); border-radius:6px; cursor:pointer; font-weight:600; }
+  .btn:hover { background: var(--green-2); }
+  table { border-collapse: collapse; width: 100%; max-width: 960px; margin-top: 10px; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align:left; vertical-align: top; }
+  th { background: #fafafa; }
+  .rule-yellow { background: var(--yellow); border: 1px solid var(--yellow-b); border-radius:6px; padding:10px; margin:10px 0; }
+  .muted { color:#666; font-size:0.92em; }
+  .note { font-size:0.92em; color:#333; }
+</style>
+</head>
+<body>
+  <h1>Simulateur calcul indemnité de retraite</h1>
+  <h2>Paramètres communs</h2>
+
+  <h3 class="title-green">Paramètres de calcul (communs aux deux tableaux)</h3>
+  <div id="parametres">
+    <div class="grid" style="margin-bottom:8px;">
+      <label>Ancienneté (années)<br><input type="number" id="anc_ans" min="0" step="1"></label>
+      <label>Ancienneté (mois)<br><input type="number" id="anc_mois" min="0" max="11" step="1"></label>
+    </div>
+    <fieldset>
+      <legend>Méthode du salaire de référence</legend>
+      <label style="margin-right:16px;"><input type="radio" name="ref" value="auto" checked> Plus favorable (automatique)</label>
+      <label style="margin-right:16px;"><input type="radio" name="ref" value="3m"> 3 derniers mois</label>
+      <label><input type="radio" name="ref" value="12m"> 12 derniers mois</label>
+      <div class="note" style="margin-top:6px;">👉 Le salaire de référence est la <strong>moyenne</strong> des 3 derniers mois ou le <strong>1/12</strong> des 12 derniers mois, selon ce qui est le plus avantageux.</div>
+    </fieldset>
+    <div class="grid" style="margin-top:8px;">
+      <label>Salaire mensuel brut habituel (€)<br><input type="number" id="salaire_mensuel" min="0" step="0.01"></label>
+      <label>Somme des 3 derniers mois (€)<br><input type="number" id="somme_3m" min="0" step="0.01"></label>
+      <label>Somme des 12 derniers mois (€)<br><input type="number" id="somme_12m" min="0" step="0.01"></label>
+    </div>
+  </div>
+
+  <h3 class="title-green">Tableau 1 — Indemnité de retraite</h3>
+  <div>
+    <label style="margin-right:16px;"><input type="radio" name="depart" value="volontaire" checked> Départ volontaire (initiative du salarié)</label>
+    <label><input type="radio" name="depart" value="mise"> Mise à la retraite (initiative de l’employeur)</label>
+  </div>
+  <button class="btn" id="btnRetraite">Calculer l’indemnité de retraite</button>
+
+  <table>
+    <tr>
+      <th>Détail</th>
+      <th>Valeur</th>
+      <th>Détail du calcul</th>
+    </tr>
+    <tr>
+      <td>Indemnité de retraite estimée</td>
+      <td><span id="resultRetraite">—</span></td>
+      <td><span id="detailRetraite">—</span></td>
+    </tr>
+  </table>
+
+  <div class="rule-yellow">
+    Cette estimation applique les <strong>minima légaux</strong>.
+    En cas de <strong>départ volontaire</strong>, l’indemnité légale n’est due qu’à partir de <strong>10 ans d’ancienneté</strong>, avec un barème de <strong>0,5 / 1 / 1,5 / 2 mois</strong> selon les paliers (≥10, ≥15, ≥20, ≥30 ans).
+    En cas de <strong>mise à la retraite</strong>, l’indemnité ne peut être <strong>inférieure</strong> à l’indemnité légale de licenciement (1/4 de mois par année jusqu’à 10 ans, puis 1/3 au‑delà).
+  </div>
+
+  <h3 class="title-green">Tableau 2 — Indemnité légale de licenciement</h3>
+  <button class="btn" id="btnLicenciement">Calculer l’indemnité légale de licenciement</button>
+
+  <table>
+    <tr>
+      <th>Détail</th>
+      <th>Valeur</th>
+      <th>Détail du calcul</th>
+    </tr>
+    <tr>
+      <td>Indemnité légale de licenciement estimée</td>
+      <td><span id="resultLic">—</span></td>
+      <td><span id="detailLic">—</span></td>
+    </tr>
+  </table>
+
+  <div class="rule-yellow">
+    Calcul selon le Code du travail : <strong>1/4 de mois de salaire par année</strong> pour les 10 premières années, puis <strong>1/3 par année</strong> au‑delà ; prorata pour l’année incomplète.
+    Salaire de référence : plus favorable entre <strong>moyenne des 3 mois</strong> et <strong>1/12 des 12 mois</strong> (primes exceptionnelles proratisées).
+  </div>
+
+  <p class="muted">⚠️ Simulateur indicatif — les conventions collectives peuvent prévoir des montants plus favorables que le minimum légal.</p>
+
+<script>
+(function(){
+  function num(id){
+    var el = document.getElementById(id);
+    if(!el) return 0;
+    var v = (el.value || '').toString().replace(',', '.');
+    var n = parseFloat(v);
+    return isNaN(n) ? 0 : n;
+  }
+  function anciennete(){
+    var ans = num('anc_ans');
+    var mois = num('anc_mois');
+    if(mois < 0) mois = 0; if(mois > 11) mois = 11;
+    return ans + (mois/12);
+  }
+  function salaireReference(){
+    var somme3 = num('somme_3m');
+    var somme12 = num('somme_12m');
+    var mensuel = num('salaire_mensuel');
+    var ref3 = somme3 > 0 ? (somme3/3) : (mensuel > 0 ? mensuel : 0);
+    var ref12 = somme12 > 0 ? (somme12/12) : (mensuel > 0 ? mensuel : 0);
+    var methodEl = document.querySelector('input[name="ref"]:checked');
+    var method = methodEl ? methodEl.value : 'auto';
+    var chosen = method === '3m' ? ref3 : (method === '12m' ? ref12 : Math.max(ref3, ref12));
+    var chosenLabel = (function(){
+      if(method === '3m') return '3 derniers mois';
+      if(method === '12m') return '12 derniers mois';
+      // auto: indicate which one actually won
+      return (ref3 >= ref12 ? 'Plus favorable: 3 derniers mois' : 'Plus favorable: 12 derniers mois');
+    })();
+    return { value: chosen, label: chosenLabel, ref3: ref3, ref12: ref12 };
+  }
+  function indemniteLicenciement(ref, anc){
+    // part 10 years at 1/4, beyond at 1/3, months prorated via anc fractional years
+    var part10 = Math.min(anc, 10);
+    var partBeyond = Math.max(anc - 10, 0);
+    return ref * (part10/4 + partBeyond/3);
+  }
+  function formatEUR(x){
+    try { return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR'}).format(x); }
+    catch(e){ return (Math.round(x*100)/100).toFixed(2) + ' €'; }
+  }
+
+  function calculerRetraite(){
+    var refObj = salaireReference();
+    var ref = refObj.value;
+    var anc = anciennete();
+    var departEl = document.querySelector('input[name="depart"]:checked');
+    var depart = departEl ? departEl.value : 'volontaire';
+    var out = document.getElementById('resultRetraite');
+    var det = document.getElementById('detailRetraite');
+
+    if(ref <= 0){
+      out.textContent = 'Veuillez renseigner le salaire.';
+      det.textContent = 'Référence manquante (renseignez 3 mois, 12 mois ou mensuel).';
+      return;
+    }
+
+    if(depart === 'volontaire'){
+      if(anc < 10){
+        out.textContent = "Pas d'indemnité légale due (<10 ans).";
+        det.textContent = 'Ancienneté: ' + anc.toFixed(2) + ' ans | Réf: ' + formatEUR(ref);
+        return;
+      }
+      // barème: 0.5 / 1 / 1.5 / 2 mois
+      var moisIndem = (anc >= 30) ? 2 : (anc >= 20) ? 1.5 : (anc >= 15) ? 1 : 0.5;
+      var montant = ref * moisIndem;
+      out.textContent = formatEUR(montant);
+      det.textContent = refObj.label + ' (' + formatEUR(ref) + ') | Ancienneté: ' + anc.toFixed(2) + ' ans | Barème: ' + moisIndem + ' mois';
+    } else {
+      // mise à la retraite: au moins égal à l'indemnité légale de licenciement
+      var montantLic = indemniteLicenciement(ref, anc);
+      out.textContent = formatEUR(montantLic);
+      det.textContent = refObj.label + ' (' + formatEUR(ref) + ') | Ancienneté: ' + anc.toFixed(2) + ' ans | Formule licenciement (minimum)';
+    }
+  }
+
+  function calculerLicenciement(){
+    var refObj = salaireReference();
+    var ref = refObj.value;
+    var anc = anciennete();
+    var out = document.getElementById('resultLic');
+    var det = document.getElementById('detailLic');
+
+    if(ref <= 0){
+      out.textContent = 'Veuillez renseigner le salaire.';
+      det.textContent = 'Référence manquante (renseignez 3 mois, 12 mois ou mensuel).';
+      return;
+    }
+
+    var montant = indemniteLicenciement(ref, anc);
+    out.textContent = formatEUR(montant);
+    det.textContent = refObj.label + ' (' + formatEUR(ref) + ') | Ancienneté: ' + anc.toFixed(2) + ' ans | Formule: 1/4 (≤10 ans) puis 1/3 (>10 ans)';
+  }
+
+  function bind(){
+    var b1 = document.getElementById('btnRetraite');
+    var b2 = document.getElementById('btnLicenciement');
+    if(b1) b1.addEventListener('click', calculerRetraite);
+    if(b2) b2.addEventListener('click', calculerLicenciement);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bind);
+  } else { bind(); }
+})();
+</script>
+</body>
+</html>
