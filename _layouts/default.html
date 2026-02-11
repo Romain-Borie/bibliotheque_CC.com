@@ -4,18 +4,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | escape }}</title>
+    <!-- Feuille de style du site -->
     <link rel="stylesheet" href="/assets/css/site.css">
   </head>
   <body>
-    <!-- Barre horizontale noire avec le logo -->
+
+    <!-- Header: barre noire + logo -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
-        /assets/img/banner-cc.png
+        <img src="/assets/img/banner-cc.png" alt="CC" class="brand-img">
       </div>
     </header>
 
+    <!-- Contenu des pages -->
     <main class="content" role="main">
       {{ content }}
     </main>
+
   </body>
 </html>
