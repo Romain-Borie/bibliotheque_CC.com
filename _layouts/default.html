@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | escape }}</title>
 
-    <!-- Lien vers TA feuille de styles (doit pointer vers un .css, pas du HTML) -->
-    <link rel="stylesheet" href="/assets/css/site.css">
+    <!-- IMPORTANT : balise <link> correcte + version pour casser le cache -->
+    <link rel="stylesheet" href="/assets/css/site.css?v=2">
   </head>
   <body>
 
-    <!-- Barre horizontale noire avec le logo -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
+        <!-- STYLE INLINE TEMPORAIRE : garantit la taille quoi qu'il arrive -->
         <img
-          src="/assets/img/banner-cc.png"
-          alt="CC — Bibliothèque et feu de cheminée"
-          class="brand-img">
+          id="logo-cc"
+          src="/assets/img/banner-cc.png?v=2"
+          alt="CC — Bibliothèque & feu de cheminée"
+          class="brand-img"
+          style="height:120px !important;width:auto !important;display:block;margin:0 auto;object-fit:contain;"
+        >
       </div>
     </header>
 
-    <!-- Contenu de chaque page -->
     <main class="content" role="main">
       {{ content }}
     </main>
