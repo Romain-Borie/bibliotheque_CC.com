@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page.title | escape }}</title>
 
-    <!-- (Optionnel) CSS du thème ici -->
-
-    <!-- Notre CSS doit être chargé APRÈS pour écraser le thème -->
-    /assets/css/site.css
+    <!-- 1) Charger la feuille de style avec une BALISE <link> -->
+    <link rel="stylesheet" href="/assets/css/site.css">
   </head>
   <body>
 
+    <!-- 2) Barre horizontale noire avec le logo (BALISE <img>) -->
     <header class="topbar" role="banner">
       <div class="topbar-inner">
-        /assets/img/banner-cc.png
+        <img src="/assets/img/banner-cc.png"
+             alt="CC — Bibliothèque & feu de cheminée"
+             class="brand-img">
       </div>
     </header>
 
+    <!-- 3) Contenu des pages -->
     <main class="content" role="main">
       {{ content }}
     </main>
