@@ -1,6 +1,3 @@
-/* TEST TEMPORAIRE : doit te mettre un cadre rouge autour du header */
-header.topbar { outline: 2px solid red !important; }
-
 /* ===== Header : barre noire + logo ===== */
 header.topbar {
   position: sticky; top: 0; z-index: 1000;
