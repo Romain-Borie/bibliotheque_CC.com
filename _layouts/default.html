@@ -55,7 +55,8 @@
     align-self: flex-start;
     height: calc(100vh - 0px);
     overflow-y: auto;
-    overflow-x: visible;
+    overflow-x: visible; /* indispensable pour les flyouts */
+    z-index: 30; /* au-dessus du contenu */
   }
   .menu { list-style: none; margin: 0; padding: 0; }
   .menu li { margin: 2px 0; }
@@ -165,7 +166,7 @@
     display: flex; align-items: center; gap: 10px;
     padding: 8px 16px;
     border-left: 3px solid transparent;
-    cursor: default;
+    cursor: pointer; /* était 'default' -> mieux en pointer */
   }
   .group-trigger:hover { background: #f4f4f4; }
   .group-trigger:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
@@ -195,7 +196,7 @@
     list-style: none;
     margin: 0;
     display: none;
-    z-index: 3000; /* AJOUT: plus haut que la sidebar et le contenu */
+    z-index: 3000; /* plus haut que la sidebar et le contenu */
   }
 
   /* Items du flyout : réutilise ta classe de lien */
@@ -206,7 +207,7 @@
     white-space: nowrap;
   }
 
-  /* OUVERTURE : parent au hover / focus clavier + maintien survol direct du flyout (AJOUT) */
+  /* OUVERTURE : parent au hover / focus clavier + maintien survol direct du flyout */
   .has-flyout:hover > .flyout,
   .has-flyout:focus-within > .flyout,
   .has-flyout .flyout:hover {
@@ -239,13 +240,6 @@
       display: block; /* visible au toucher sans hover */
       z-index: auto;
     }
-  }
-
-  /* S'assurer que la sidebar est au-dessus du contenu (légère hausse de z-index) */
-  aside.sidebar {
-    position: relative; /* déjà présent */
-    z-index: 30;        /* > au contenu principal */
-    overflow-x: visible; /* indispensable pour les flyouts */
   }
   </style>
 </head>
