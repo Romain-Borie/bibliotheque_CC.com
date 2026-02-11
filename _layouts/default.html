@@ -225,19 +225,19 @@
           </li>
 
 
-  
+//Menu Simulateur
 
 <li class="group">
   <button
-    class="menu-toggle {% if page.url contains '/bulletins/' %}active{% endif %}"
-    aria-expanded="{% if page.url contains '/bulletins/' %}true{% else %}false{% endif %}"
-    aria-controls="submenu-bulletins">
+    class="menu-toggle {% if page.url contains '/simulateur/' %}active{% endif %}"
+    aria-expanded="{% if page.url contains '/simulateur/' %}true{% else %}false{% endif %}"
+    aria-controls="submenu-simulateur">
     <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
-    <span>Bulletins</span>
+    <span>Simulateur</span>
     <span class="chevron" aria-hidden="true">▸</span>
   </button>
 
-  <ul id="submenu-bulletins" class="submenu" {% unless page.url contains '/bulletins/' %}hidden{% endunless %}>
+  <ul id="submenu-simulateur" class="submenu" {% unless page.url contains '/simulateur/' %}hidden{% endunless %}>
     <!-- Optionnel : entrée “Vue d’ensemble” si tu as /bulletins/ -->
     <!--
     <li>
@@ -249,20 +249,22 @@
     -->
 
     <li>
-      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/mensuels/' %}active{% endif %}"
-         href="/bulletins/mensuels/">
-        Mensuels
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/retraite/' %}active{% endif %}"
+         href="/simulateur/retraite/">
+        Indemnité de départ à la retraite
       </a>
     </li>
 
     <li>
-      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/annuels/' %}active{% endif %}"
-         href="/bulletins/annuels/">
-        Annuels
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/divers/' %}active{% endif %}"
+         href="/simulateur/divers/">
+        Divers
       </a>
     </li>
   </ul>
 </li>
+
+//Fin Menu Simulateur
 
 
           <li>
