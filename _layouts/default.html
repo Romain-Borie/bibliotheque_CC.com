@@ -17,7 +17,8 @@
       }
 
       header.topbar .topbar-inner {
-        height: 96px;
+        padding-block: clamp(6px, 0.8vw + 4px, 14px);  /* fluide selon la largeur */
+        padding-inline: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,11 +27,12 @@
       /* ===== TITRE ===== */
       .site-title {
         color: #fff;
-        font-size: 12.0pt;
-        letter-spacing: 2px;
+        font-size: clamp(18px, 2vw + 8px, 32px); /* taille fluide */
+        letter-spacing: .2;                        /* garde une bonne lisibilité */
+        letter-spacing: 1px;
         text-transform: uppercase;
         font-family: Verdana;
-        font-weight: 800;
+        font-weight: 500;
       }
 
       /* ===== Contenu ===== */
