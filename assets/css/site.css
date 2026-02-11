@@ -1,19 +1,22 @@
-/* Barre horizontale noire + logo */
+/* ----- Styles du header uniquement ----- */
 .topbar {
   position: sticky; top: 0; z-index: 1000;
-  background: #000; border-bottom: 1px solid #1a1a1a;
+  background: #000;            /* NOIR uniquement pour la barre */
+  border-bottom: 1px solid #1a1a1a;
 }
 .topbar-inner {
   height: 76px; padding: 8px 16px;
   display: flex; align-items: center; justify-content: center;
 }
-.brand-img { height: 60px; width: auto; display: block; object-fit: contain; }
-
-/* Zone contenu */
-.content { padding: 24px 18px; color: #e9e9e9; background: #0b0b0b; }
-
-/* Responsive */
+.brand-img {
+  height: 56px; width: auto; display: block; object-fit: contain;
+}
 @media (max-width: 640px) {
   .topbar-inner { height: 64px; }
-  .brand-img { height: 48px; }
+  .brand-img    { height: 44px; }
 }
+
+/* ----- Contenu de page : fond BLANC ----- */
+body { margin: 0; background: #fff; color: #111;
+       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans"; }
+.content { padding: 24px 18px 56px; }
