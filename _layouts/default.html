@@ -60,8 +60,7 @@
         align-self: flex-start;
         height: calc(100vh - 0px);
         overflow-y: auto;
-        overflow-x: visible;         /* <- ; ajouté */
-        z-index: 20;                 /* au-dessus du contenu si besoin */
+		overflow-x: visible;
       }
       .menu { list-style: none; margin: 0; padding: 0; }
       .menu li { margin: 2px 0; }
@@ -113,132 +112,182 @@
         }
       }
 
-      /* ===== Groupes avec sous-menus ===== */
-      .menu .group { margin: 4px 0; }
+	/* ===== Groupes avec sous-menus ===== */
+.menu .group {
+  margin: 4px 0;
+}
 
-      /* Bouton de groupe (même gabarit visuel que tes liens) */
-      .menu-toggle {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 16px;
-        color: #333;
-        background: transparent;
-        border: 0;
-        text-align: left;
-        cursor: pointer;
-        font: inherit;
-        border-left: 3px solid transparent;
-        border-radius: 0;    /* garde l’aspect “lien” */
-      }
-      .menu-toggle:hover { background: #f4f4f4; }
-      .menu-toggle:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
+/* Bouton de groupe (même gabarit visuel que tes liens) */
+.menu-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  color: #333;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  border-left: 3px solid transparent;
+  border-radius: 0;    /* garde l’aspect “lien” */
+}
+.menu-toggle:hover { background: #f4f4f4; }
+.menu-toggle:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
 
-      /* Chevrons indicateurs */
-      .menu-toggle .chevron {
-        margin-left: auto;
-        transition: transform .2s ease;
-      }
-      .menu-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+/* Chevrons indicateurs */
+.menu-toggle .chevron {
+  margin-left: auto;
+  transition: transform .2s ease;
+}
+.menu-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); }
 
-      /* Sous-menu (caché par défaut via [hidden]) */
-      .submenu {
-        list-style: none;
-        margin: 2px 0 6px 0;
-        padding: 0 0 0 20px; /* indentation visuelle */
-        border-left: 2px solid #eef2f7;
-      }
-      .submenu li a.sc-fqkvVR.dMxrQl { padding-left: 8px; }
+/* Sous-menu (caché par défaut via [hidden]) */
+.submenu {
+  list-style: none;
+  margin: 2px 0 6px 0;
+  padding: 0 0 0 20px; /* indentation visuelle */
+  border-left: 2px solid #eef2f7;
+}
+.submenu li a.sc-fqkvVR.dMxrQl { padding-left: 8px; }
 
-      /* Actif (hérite de ton style actif) */
-      .submenu a.sc-fqkvVR.dMxrQl.active {
-        background: #1f8f4e;
-        color: #fff;
-        border-left-color: #156d3b;
-        font-weight: 600;
-      }
+/* Actif (hérite de ton style actif) */
+.submenu a.sc-fqkvVR.dMxrQl.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
 
-      /* Actif pour le bouton de groupe */
-      .menu-toggle.active {
-        background: #1f8f4e;
-        color: #fff;
-        border-left-color: #156d3b;
-        font-weight: 600;
-      }
-      /* Assure que les textes/chevrons héritent bien du blanc en actif */
-      .menu-toggle.active .chevron,
-      .menu-toggle.active span { color: inherit; }
 
-      /* ===== Flyout à droite (ouverture au survol/focus) ===== */
-      .has-flyout { position: relative; padding-right: 8px; } /* ancre + réduit le "trou" */
+/* Actif pour le bouton de groupe */
+.menu-toggle.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
 
-      /* Déclencheur (look proche de tes liens) */
-      .group-trigger {
-        display: flex; align-items: center; gap: 10px;
-        padding: 8px 16px;
-        border-left: 3px solid transparent;
-        cursor: pointer;
-      }
-      .group-trigger:hover { background: #f4f4f4; }
-      .group-trigger:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
-      .group-trigger .chevron { margin-left: auto; }
+/* Assure que les textes/chevrons héritent bien du blanc en actif */
+.menu-toggle.active .chevron,
+.menu-toggle.active span {
+  color: inherit;
+}
 
-      /* Flyout : au-dessus de tout, collé au parent (chevauchement léger) */
-      .has-flyout .flyout {
-        position: absolute;
-        top: 0;
-        left: calc(100% - 2px);  /* évite de "perdre" le hover */
-        z-index: 2000;           /* au-dessus du contenu */
-        min-width: 260px;
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 6px 18px rgba(0,0,0,.12);
-        border-radius: 6px;
-        padding: 6px 0;
-        list-style: none;
-        margin: 0;
-        display: none;
-      }
+/* ===== Flyout à droite (ouverture au survol/focus) ===== */
+.has-flyout { position: relative; }  /* référence de positionnement */
 
-      /* Items du flyout : réutilise ta classe de lien */
-      .has-flyout .flyout a.sc-fqkvVR.dMxrQl {
-        display: block;
-        padding: 8px 14px;
-        border-left: 3px solid transparent;
-        white-space: nowrap;
-      }
+/* Déclencheur (look proche de tes liens) */
+.group-trigger {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  border-left: 3px solid transparent;
+  cursor: default;
+}
+.group-trigger:hover { background: #f4f4f4; }
+.group-trigger:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
+.group-trigger .chevron { margin-left: auto; }
 
-      /* OUVERTURE : survol du li parent ou focus clavier (accessibilité) */
-      .has-flyout:hover > .flyout,
-      .has-flyout:focus-within > .flyout { display: block; }
+/* Le flyout est masqué par défaut */
+.has-flyout .flyout {
+  position: absolute;
+  top: 0; left: 100%;            /* à droite de la sidebar */
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-radius: 6px;
+  padding: 6px 0;
+  list-style: none;
+  margin: 0;
+  display: none;
+  z-index: 1001;
+}
 
-      /* État "actif" (reprend tes styles)  */
-      .has-flyout .flyout a.sc-fqkvVR.dMxrQl.active {
-        background: #1f8f4e;
-        color: #fff;
-        border-left-color: #156d3b;
-        font-weight: 600;
-      }
+/* Items du flyout : réutilise ta classe de lien */
+.has-flyout .flyout a.sc-fqkvVR.dMxrQl {
+  display: block;
+  padding: 8px 14px;
+  border-left: 3px solid transparent;
+  white-space: nowrap;
+}
 
-      /* Si on est sur une page Simulateur, surligne le trigger (SSR via Liquid) */
-      {% if page.url contains '/simulateur/' %}
-      .has-flyout .group-trigger {
-        background: #1f8f4e; color: #fff; border-left-color: #156d3b; font-weight: 600;
-      }
-      .has-flyout .group-trigger .chevron { color: inherit; }
-      {% endif %}
+/* OUVERTURE : survol de l'item parent ou focus clavier (accessibilité) */
+.has-flyout:hover > .flyout,
+.has-flyout:focus-within > .flyout {
+  display: block;
+}
 
-      /* Mobile : le flyout se replie sous l'item (vertical, utilisable au doigt) */
-      @media (max-width: 700px) {
-        .has-flyout .flyout {
-          position: static;
-          border: 0; box-shadow: none;
-          border-left: 2px solid #eef2f7;
-          margin-left: 20px;
-          display: block; /* visible au toucher sans hover */
-        }
-      }
+/* État "actif" (reprend tes styles)  */
+.has-flyout .flyout a.sc-fqkvVR.dMxrQl.active {
+  background: #1f8f4e;
+  color: #fff;
+  border-left-color: #156d3b;
+  font-weight: 600;
+}
+
+/* Si on est sur une page Simulateur, surligne le trigger (SSR via Liquid) */
+{% if page.url contains '/simulateur/' %}
+.has-flyout .group-trigger {
+  background: #1f8f4e; color: #fff; border-left-color: #156d3b; font-weight: 600;
+}
+.has-flyout .group-trigger .chevron { color: inherit; }
+{% endif %}
+
+/* Mobile : le flyout se replie sous l'item (pas à droite, plus pratique au doigt) */
+@media (max-width: 700px) {
+  .has-flyout .flyout {
+    position: static;
+    border: 0; box-shadow: none;
+    border-left: 2px solid #eef2f7;
+    margin-left: 20px;
+    display: block; /* visible au toucher sans hover */
+  }
+}
+
+/* S'assurer que la sidebar est au-dessus du contenu */
+aside.sidebar {
+  position: relative;        /* déjà présent : OK si oui */
+  z-index: 20;               /* > au contenu principal */
+  overflow-x: visible;       /* avec le ; bien présent */
+}
+
+/* Le li parent sert bien d'ancre pour l'absolu */
+.has-flyout {
+  position: relative;        /* tu l'as déjà, je confirme */
+  padding-right: 8px;        /* réduit le "trou" entre item et flyout */
+}
+
+/* Flyout : au-dessus de tout, et collé au parent sans "trou" */
+.has-flyout .flyout {
+  position: absolute;
+  top: 0;
+  left: calc(100% - 2px);    /* chevauchement léger pour éviter la perte de hover */
+  z-index: 2000;             /* > sidebar et > contenu */
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  border-radius: 6px;
+  padding: 6px 0;
+  list-style: none;
+  margin: 0;
+  display: none;
+}
+
+/* OUVERTURE : item parent (li) au hover / focus clavier */
+.has-flyout:hover > .flyout,
+.has-flyout:focus-within > .flyout {
+  display: block;
+}
+
+/* Confort : pendant l'ouverture, le trigger reste "actif" visuellement */
+.has-flyout:hover > .group-trigger,
+.has-flyout:focus-within > .group-trigger {
+  background: #f4f4f4;
+}
+
     </style>
   </head>
 
@@ -259,7 +308,7 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url == '/' or page.url contains '/tableau-de-bord/' %}active{% endif %}"
-               href="{{ '/tableau-de-bord/' | relative_url }}">
+               href="/tableau-de-bord/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="home"></span>
               <span class="">Tableau de bord</span>
             </a>
@@ -267,7 +316,7 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/actualites-ccn/' %}active{% endif %}"
-               href="{{ '/actualites-ccn/' | relative_url }}">
+               href="/actualites-ccn/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="page"></span>
               <span class="">Actualités CCN</span>
             </a>
@@ -275,40 +324,54 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/astuces-romain/' %}active{% endif %}"
-               href="{{ '/astuces-romain/' | relative_url }}">
+               href="/astuces-romain/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="page"></span>
               <span class="">Les astuces de Romain</span>
             </a>
           </li>
-
+		  
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/cuisine-cc/' %}active{% endif %}"
-               href="{{ '/cuisine-class="chevron" aria-hidden="true">▸</span>
-            </div>
-
-            <!-- Sous-menu flyout, affiché à droite -->
-            <ul class="flyout" role="menu" aria-label="Sous-menu Simulateur">
-              <li role="none">
-                <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/retraite/' %}active{% endif %}"
-                   href="{{ '/simulateur/retraite/' | relative_url }}"
-                   role="menuitem" {% if page.url contains '/simulateur/retraite/' %}aria-current="page"{% endif %}>
-                  Indemnité de départ à la retraite
-                </a>
-              </li>
-              <li role="none">
-                <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/divers/' %}active{% endif %}"
-                   href="{{ '/simulateur/divers/' | relative_url }}"
-                   role="menuitem" {% if page.url contains '/simulateur/divers/' %}aria-current="page"{% endif %}>
-                  Divers
-                </a>
-              </li>
-            </ul>
+               href="/cuisine-cc/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="page"></span>
+              <span class="">Cuisine CC</span>
+            </a>
           </li>
-          <!-- Fin Menu Simulateur -->
+
+
+<!-- Menu Simulateur (flyout) -->
+<li class="group has-flyout">
+  <!-- Déclencheur : s'ouvre au survol ou focus clavier -->
+  <div class="group-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
+    <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
+    <span>Simulateur</span>
+    <span class="chevron" aria-hidden="true">▸</span>
+  </div>
+
+  <!-- Sous-menu flyout, affiché à droite -->
+  <ul class="flyout" role="menu" aria-label="Sous-menu Simulateur">
+    <li role="none">
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/retraite/' %}active{% endif %}"
+         href="{{ '/simulateur/retraite/' | relative_url }}"
+         role="menuitem" {% if page.url contains '/simulateur/retraite/' %}aria-current="page"{% endif %}>
+        Indemnité de départ à la retraite
+      </a>
+    </li>
+    <li role="none">
+      <a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/divers/' %}active{% endif %}"
+         href="{{ '/simulateur/divers/' | relative_url }}"
+         role="menuitem" {% if page.url contains '/simulateur/divers/' %}aria-current="page"{% endif %}>
+        Divers
+      </a>
+    </li>
+  </ul>
+</li>
+<!-- Fin Menu Simulateur -->
+
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/dsn/' %}active{% endif %}"
-               href="{{ '/dsn/' | relative_url }}">
+               href="/dsn/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="file-taxes"></span>
               <span class="">DSN</span>
             </a>
@@ -316,7 +379,7 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/modules/' %}active{% endif %}"
-               href="{{ '/modules/' | relative_url }}">
+               href="/modules/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="puzzle"></span>
               <span class="">Modules</span>
             </a>
@@ -324,7 +387,7 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/etats-declarations/' %}active{% endif %}"
-               href="{{ '/etats-declarations/' | relative_url }}">
+               href="/etats-declarations/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="chart"></span>
               <span class="">États et déclarations</span>
             </a>
@@ -332,7 +395,7 @@
 
           <li>
             <a class="sc-fqkvVR dMxrQl {% if page.url contains '/etats-controle/' %}active{% endif %}"
-               href="{{ '/etats-controle/' | relative_url }}">
+               href="/etats-controle/">
               <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="checklist"></span>
               <span class="">États de contrôle</span>
             </a>
@@ -347,33 +410,58 @@
       </main>
 
     </div>
+	
 
-    <!-- Script (accordé');
-          }
-        });
-      })();
-    </script>
+<script>
+  (function () {
+    const toggles = document.querySelectorAll('.menu-toggle');
 
-    <!-- Script accessibilité flyout (aria-expanded) -->
-    <script>
-      document.querySelectorAll('.has-flyout').forEach(group => {
-        const trig = group.querySelector('.group-trigger');
-        const fly  = group.querySelector('.flyout');
-
-        const open  = () => trig.setAttribute('aria-expanded','true');
-        const close = () => trig.setAttribute('aria-expanded','false');
-
-        group.addEventListener('mouseenter', open);
-        group.addEventListener('mouseleave', close);
-        trig.addEventListener('focus', open);
-        fly.addEventListener('focusin', open);
-        fly.addEventListener('focusout', () => {
-          if (!group.contains(document.activeElement)) close();
-        });
-
-        // Au chargement : si un lien du flyout est actif, ouvre
-        if (fly.querySelector('a.active')) open();
+    // Plier/déplier
+    toggles.forEach(btn => {
+      const submenuId = btn.getAttribute('aria-controls');
+      const submenu = document.getElementById(submenuId);
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        if (submenu) submenu.hidden = expanded;
       });
-    </script>
+    });
+
+    // Ouvrir le groupe ET marquer le bouton actif si un sous-lien est actif
+    document.querySelectorAll('.submenu a.sc-fqkvVR.dMxrQl.active').forEach(link => {
+      const ul = link.closest('.submenu');
+      if (!ul) return;
+      const btn = document.querySelector(`.menu-toggle[aria-controls="${ul.id}"]`);
+      if (btn) {
+        btn.setAttribute('aria-expanded', 'true');
+        ul.hidden = false;
+        btn.classList.add('active');   // <= AJOUT CLEF
+      }
+    });
+  })();
+</script>
+
+<script>
+  document.querySelectorAll('.has-flyout').forEach(group => {
+    const trig = group.querySelector('.group-trigger');
+    const fly  = group.querySelector('.flyout');
+
+    const open  = () => trig.setAttribute('aria-expanded','true');
+    const close = () => trig.setAttribute('aria-expanded','false');
+
+    group.addEventListener('mouseenter', open);
+    group.addEventListener('mouseleave', close);
+    trig.addEventListener('focus', open);
+    fly.addEventListener('focusin', open);
+    fly.addEventListener('focusout', () => {
+      if (!group.contains(document.activeElement)) close();
+    });
+
+    // Au chargement : si un lien du flyout est actif, ouvre
+    if (fly.querySelector('a.active')) open();
+  });
+</script>
+
+
   </body>
 </html>
