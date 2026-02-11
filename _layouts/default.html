@@ -15,9 +15,8 @@
         background: #000;
         border-bottom: 1px solid #1a1a1a;
       }
-
       header.topbar .topbar-inner {
-        padding-block: clamp(6px, 0.8vw + 4px, 14px);  /* fluide selon la largeur */
+        padding-block: clamp(6px, 0.8vw + 4px, 14px);
         padding-inline: 16px;
         display: flex;
         align-items: center;
@@ -27,8 +26,8 @@
       /* ===== TITRE ===== */
       .site-title {
         color: #fff;
-        font-size: 12.0pt; /* taille du titre (tu peux garder/ajuster) */
-        letter-spacing: 1px; /* (j'ai supprimé la ligne en double .2 sans unité) */
+        font-size: 12.0pt;  /* ta valeur personnalisée */
+        letter-spacing: 1px;
         text-transform: none;
         font-family: Verdana;
         font-weight: 500;
@@ -41,78 +40,66 @@
         background: #fff;
         color: #111;
         font-family: Verdana;
-        font-size: 12.0pt;     /* ✅ TAILLE DU TEXTE DU SITE (laisse comme tu veux) */
-        line-height: 1.6;      /* ✅ CONFORT DE LECTURE (corrigé) */
+        font-size: 12.0pt;  /* taille du site (hors titre) conservée */
+        line-height: 1.6;
       }
 
-      /* ====== LAYOUT PRINCIPAL (NEW) ====== */
+      /* ===== Layout global ===== */
       .app {
-        display: flex;                  /* sidebar + contenu côte à côte */
-        min-height: calc(100vh - 0px);  /* occupe la hauteur restante sous la topbar sticky */
+        display: flex;        /* sidebar + contenu côte à côte */
+        min-height: calc(100vh - 0px);
       }
 
-      /* ====== SIDEBAR (NEW) ====== */
+      /* ===== Sidebar ===== */
       aside.sidebar {
-        width: 240px;                   /* largeur fixe de la barre gauche */
+        width: 240px;
         background: #fff;
         border-right: 1px solid #e0e0e0;
         padding: 12px 0;
-        position: sticky;               /* reste visible au scroll */
-        top: calc( /* hauteur visuelle du header */ 0px );
-        align-self: flex-start;         /* pour sticky */
+        position: sticky; top: 0;
+        align-self: flex-start;
         height: calc(100vh - 0px);
         overflow-y: auto;
       }
-
-      .menu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-
+      .menu { list-style: none; margin: 0; padding: 0; }
       .menu li { margin: 2px 0; }
 
-      .menu a {
+      /* Bloc lien de menu — TES CLASSES */
+      a.sc-fqkvVR.dMxrQl {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 10px 16px;
+        padding: 8px 16px;
         color: #333;
         text-decoration: none;
-        font-size: 14px;
+        font-size: inherit;            /* hérite de 12pt */
+        border-left: 3px solid transparent;
+      }
+      a.sc-fqkvVR.dMxrQl:hover { background: #f4f4f4; }
+
+      /* Icône (ton pattern) */
+      .icon-style__StyledIcon-sc-74150e41-0.jEBroz {
+        width: 18px; height: 18px; display: inline-block;
       }
 
-      .menu a:hover {
-        background: #f4f4f4;
-      }
-
-      /* Élément actif (NEW) - on ajoute .active manuellement, ou on le fera via Liquid plus tard */
-      .menu a.active {
+      /* Actif (surlignage) */
+      a.sc-fqkvVR.dMxrQl.active {
         background: #1f8f4e;
         color: #fff;
+        border-left-color: #156d3b;
         font-weight: 600;
       }
 
-      .icon {
-        width: 18px;
-        text-align: center;
-        font-size: 16px;
-      }
-
-      /* ====== CONTENU PRINCIPAL (NEW) ====== */
+      /* Contenu principal */
       main.content {
-        flex: 1;                /* prend tout l’espace restant */
+        flex: 1;
         padding: 24px 18px 56px;
         background: #fff;
       }
-
       main.content h1 { margin-top: 0; }
 
-      /* ===== Responsive simple ===== */
-      @media (max-width: 900px) {
-        aside.sidebar { width: 200px; }
-      }
-
+      /* Responsive simple */
+      @media (max-width: 900px) { aside.sidebar { width: 200px; } }
       @media (max-width: 700px) {
         .app { flex-direction: column; }
         aside.sidebar {
@@ -137,18 +124,82 @@
     <!-- LAYOUT global : SIDEBAR + CONTENU -->
     <div class="app">
 
-      <!-- SIDEBAR GAUCHE (NEW) -->
+      <!-- SIDEBAR GAUCHE -->
       <aside class="sidebar" role="navigation" aria-label="Menu latéral">
         <ul class="menu">
-          <li>#<span class="icon">🏠</span> Tableau de bord</a></li>
-          <li>#<span class="icon">📰</span> Actualités CCN</a></li>
-          <li>#<span class="icon">👥</span> Salariés</a></li>
-          <li>#<span class="icon">📅</span> Absences</a></li>
-          <li>#<span class="icon">📄</span> Bulletins</a></li>
-          <li>#<span class="icon">🧾</span> DSN</a></li>
-          <li>#<span class="icon">🧩</span> Modules</a></li>
-          <li>#<span class="icon">📊</span> États et déclarations</a></li>
-          <li>#<span class="icon">✅</span> États de contrôle</a></li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url == '/' or page.url contains '/tableau-de-bord/' %}active{% endif %}"
+               href="/tableau-de-bord/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="home"></span>
+              <span class="">Tableau de bord</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/actualites-ccn/' %}active{% endif %}"
+               href="/actualites-ccn/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="page"></span>
+              <span class="">Actualités CCN</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/salaries/' %}active{% endif %}"
+               href="/salaries/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="users"></span>
+              <span class="">Salariés</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/absences/' %}active{% endif %}"
+               href="/absences/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="calendar"></span>
+              <span class="">Absences</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/bulletins/' %}active{% endif %}"
+               href="/bulletins/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="doc"></span>
+              <span class="">Bulletins</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/dsn/' %}active{% endif %}"
+               href="/dsn/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="file-taxes"></span>
+              <span class="">DSN</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/modules/' %}active{% endif %}"
+               href="/modules/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="puzzle"></span>
+              <span class="">Modules</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/etats-declarations/' %}active{% endif %}"
+               href="/etats-declarations/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="chart"></span>
+              <span class="">États et déclarations</span>
+            </a>
+          </li>
+
+          <li>
+            <a class="sc-fqkvVR dMxrQl {% if page.url contains '/etats-controle/' %}active{% endif %}"
+               href="/etats-controle/">
+              <span class="icon-style__StyledIcon-sc-74150e41-0 jEBroz" data-element="checklist"></span>
+              <span class="">États de contrôle</span>
+            </a>
+          </li>
+
         </ul>
       </aside>
 
