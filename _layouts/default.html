@@ -246,6 +246,48 @@
   }
 }
 
+/* S'assurer que la sidebar est au-dessus du contenu */
+aside.sidebar {
+  position: relative;        /* déjà présent : OK si oui */
+  z-index: 20;               /* > au contenu principal */
+  overflow-x: visible;       /* avec le ; bien présent */
+}
+
+/* Le li parent sert bien d'ancre pour l'absolu */
+.has-flyout {
+  position: relative;        /* tu l'as déjà, je confirme */
+  padding-right: 8px;        /* réduit le "trou" entre item et flyout */
+}
+
+/* Flyout : au-dessus de tout, et collé au parent sans "trou" */
+.has-flyout .flyout {
+  position: absolute;
+  top: 0;
+  left: calc(100% - 2px);    /* chevauchement léger pour éviter la perte de hover */
+  z-index: 2000;             /* > sidebar et > contenu */
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  border-radius: 6px;
+  padding: 6px 0;
+  list-style: none;
+  margin: 0;
+  display: none;
+}
+
+/* OUVERTURE : item parent (li) au hover / focus clavier */
+.has-flyout:hover > .flyout,
+.has-flyout:focus-within > .flyout {
+  display: block;
+}
+
+/* Confort : pendant l'ouverture, le trigger reste "actif" visuellement */
+.has-flyout:hover > .group-trigger,
+.has-flyout:focus-within > .group-trigger {
+  background: #f4f4f4;
+}
+
     </style>
   </head>
 
