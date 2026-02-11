@@ -12,7 +12,7 @@ header.topbar .topbar-inner {
 }
 
 header.topbar .brand-img {
-  height: 90px;                   /* >>> TAILLE DU LOGO ICI <<< */
+  height: 600px;                   /* >>> TAILLE DU LOGO ICI <<< */
   width: auto; display: block; object-fit: contain;
   max-width: min(92vw, 1100px);
 }
