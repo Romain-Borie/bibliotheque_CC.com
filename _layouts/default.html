@@ -166,19 +166,19 @@
     display: flex; align-items: center; gap: 10px;
     padding: 8px 16px;
     border-left: 3px solid transparent;
-    cursor: pointer; /* était 'default' -> mieux en pointer */
+    cursor: pointer; /* meilleure affordance */
   }
   .group-trigger:hover { background: #f4f4f4; }
   .group-trigger:focus { outline: 2px solid #cde6d6; outline-offset: 2px; }
   .group-trigger .chevron { margin-left: auto; }
 
-  /* PONT ANTI-PERTE DE HOVER (AJOUT) */
+  /* PONT ANTI-PERTE DE HOVER */
   .has-flyout::after {
     content: "";
     position: absolute;
     top: 0;
     left: 100%;
-    width: 16px;      /* petit pont pour éviter le "trou" */
+    width: 16px;
     height: 100%;
   }
 
@@ -186,7 +186,7 @@
   .has-flyout .flyout {
     position: absolute;
     top: 0;
-    left: calc(100% - 2px); /* chevauchement léger pour éviter la perte de hover */
+    left: calc(100% - 2px);
     min-width: 260px;
     background: #fff;
     border: 1px solid #e0e0e0;
@@ -196,10 +196,10 @@
     list-style: none;
     margin: 0;
     display: none;
-    z-index: 3000; /* plus haut que la sidebar et le contenu */
+    z-index: 9999; /* très haut pour lever tout doute */
+    pointer-events: auto;
   }
 
-  /* Items du flyout : réutilise ta classe de lien */
   .has-flyout .flyout a.sc-fqkvVR.dMxrQl {
     display: block;
     padding: 8px 14px;
@@ -207,19 +207,11 @@
     white-space: nowrap;
   }
 
-  /* OUVERTURE : parent au hover / focus clavier + maintien survol direct du flyout */
+  /* OUVERTURE CSS : on blinde avec !important en cas de règle concurrente */
   .has-flyout:hover > .flyout,
   .has-flyout:focus-within > .flyout,
   .has-flyout .flyout:hover {
-    display: block;
-  }
-
-  /* État "actif" (reprend tes styles) */
-  .has-flyout .flyout a.sc-fqkvVR.dMxrQl.active {
-    background: #1f8f4e;
-    color: #fff;
-    border-left-color: #156d3b;
-    font-weight: 600;
+    display: block !important;
   }
 
   /* Si on est sur une page Simulateur, surligne le trigger (SSR via Liquid) */
@@ -230,14 +222,14 @@
   .has-flyout .group-trigger .chevron { color: inherit; }
   {% endif %}
 
-  /* Mobile : le flyout se replie sous l'item (pas à droite, plus pratique au doigt) */
+  /* Mobile */
   @media (max-width: 700px) {
     .has-flyout .flyout {
       position: static;
       border: 0; box-shadow: none;
       border-left: 2px solid #eef2f7;
       margin-left: 20px;
-      display: block; /* visible au toucher sans hover */
+      display: block !important;
       z-index: auto;
     }
   }
@@ -371,7 +363,7 @@
         if (btn) {
           btn.setAttribute('aria-expanded', 'true');
           ul.hidden = false;
-          btn.classList.add('active'); // <= AJOUT CLEF
+          btn.classList.add('active');
         }
       });
     })();
@@ -381,47 +373,44 @@
     document.querySelectorAll('.has-flyout').forEach(group => {
       const trig = group.querySelector('.group-trigger');
       const fly = group.querySelector('.flyout');
-      const open = () => trig.setAttribute('aria-expanded','true');
-      const close = () => trig.setAttribute('aria-expanded','false');
-      group.addEventListener('mouseenter', open);
-      group.addEventListener('mouseleave', close);
-      trig.addEventListener('focus', open);
-      fly.addEventListener('focusin', open);
+
+      const show = () => {
+        trig.setAttribute('aria-expanded','true');
+        fly.style.display = 'block';
+      };
+      const hide = () => {
+        trig.setAttribute('aria-expanded','false');
+        fly.style.display = 'none';
+      };
+
+      // Hover / focus maintenus en JS (en plus du CSS) -> robuste aux overrides
+      group.addEventListener('mouseenter', show);
+      group.addEventListener('mouseleave', hide);
+      trig.addEventListener('focus', show);
+      fly.addEventListener('focusin', show);
       fly.addEventListener('focusout', () => {
-        if (!group.contains(document.activeElement)) close();
+        if (!group.contains(document.activeElement)) hide();
       });
-      // Au chargement : si un lien du flyout est actif, ouvre
-      if (fly.querySelector('a.active')) open();
-    });
-  </script>
 
-  <!-- AJOUT : ouverture/fermeture au clic + fermeture clic extérieur -->
-  <script>
-    document.querySelectorAll('.has-flyout').forEach(group => {
-      const trig = group.querySelector('.group-trigger');
-      const fly  = group.querySelector('.flyout');
-
-      // Bascule au clic sur le déclencheur (complément au hover/focus)
+      // Toggle au clic
       trig.addEventListener('click', (e) => {
         e.preventDefault();
         const isOpen = trig.getAttribute('aria-expanded') === 'true';
-        trig.setAttribute('aria-expanded', String(!isOpen));
-        fly.style.display = isOpen ? 'none' : 'block';
+        isOpen ? hide() : show();
       });
 
-      // Ferme si clic en dehors du groupe
+      // Ferme au clic extérieur
       document.addEventListener('click', (e) => {
-        if (!group.contains(e.target)) {
-          trig.setAttribute('aria-expanded', 'false');
-          fly.style.display = 'none';
-        }
+        if (!group.contains(e.target)) hide();
+      });
+
+      // Échap pour fermer
+      group.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hide();
       });
 
       // Au chargement : si un lien du flyout est actif, ouvrir
-      if (fly.querySelector('a.active')) {
-        trig.setAttribute('aria-expanded', 'true');
-        fly.style.display = 'block';
-      }
+      if (fly.querySelector('a.active')) show();
     });
   </script>
 </body>
