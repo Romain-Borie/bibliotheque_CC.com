@@ -1,69 +1,190 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page.title | escape }}</title>
-<style>
-:root{--brand:#1f8f4e;--brand-dark:#17603a;--text:#1e2a32;--muted:#5a6a72;--surface:#fff;--surface-2:#f3f6f8;--hover:#f4f4f4;--flyout-hover:#e8eef2;--border:#e0e0e0}
-html,body{margin:0;background:var(--surface);color:var(--text);font-family:Verdana,system-ui,-apple-system,Segoe UI,Roboto,Arial;font-size:12pt;line-height:1.6}
-a{color:inherit;text-decoration:none}a:visited{color:inherit}a:hover{text-decoration:none}
-.app{display:flex;min-height:100vh}
-aside.sidebar{width:260px;background:#fff;border-right:1px solid var(--border);padding:12px 0;position:sticky;top:0;height:100vh;overflow:auto}
-main.content{flex:1;padding:24px}
-.menu{list-style:none;margin:0;padding:0}
-.menu li{margin:2px 0;overflow:hidden;box-sizing:border-box}
-.menu li.has-flyout{overflow:visible}
-.item,.group-trigger{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border-left:4px solid transparent;background:transparent;color:var(--text);cursor:pointer;text-align:left;border:0;font:inherit}
-.item:hover,.group-trigger:hover{background:var(--hover)}
-.item.active{background:var(--brand);color:#fff;border-left-color:#156d3b;font-weight:600}
-.icon{width:18px;height:18px;flex:0 0 18px;display:inline-block;color:var(--muted)}
-.label{flex:1}
-.chevron{margin-left:auto;color:var(--muted)}
-li.has-flyout{position:relative}
-.flyout-panel{position:absolute;top:0;left:calc(100% - 2px);width:520px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.12);display:none;z-index:9999;overflow:hidden}
-li.has-flyout.open>.flyout-panel{display:block}
-/* Strict 50/50 columns and VISUALLY equal paddings */
-.flyout-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:0}
-/* give same horizontal padding to both cells */
-.flyout-header,.flyout-body{min-width:0;padding:16px}
-.flyout-header{background:var(--brand-dark);color:#fff;display:flex;align-items:center;font-weight:700}
-/* add a center divider to balance the eye */
-.flyout-body{background:var(--surface-2);border-left:1px solid var(--border)}
-/* list inside body: remove side paddings so the 16px from body acts equally to header */
-.flyout-list{list-style:none;margin:0;padding:0}
-.flyout-link{display:flex;align-items:center;gap:10px;padding:8px 0;color:var(--text);border-left:3px solid transparent}
-.flyout-link:hover{background:transparent}
-.flyout-link.active{background:transparent;color:var(--brand)}
-@media (max-width:700px){.app{flex-direction:column}aside.sidebar{width:100%;position:static;height:auto}.flyout-panel{position:static;width:auto;border:0;box-shadow:none;margin-left:20px;display:block}.flyout-grid{grid-template-columns:1fr}.flyout-body{border-left:0}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | escape }}</title>
+  <style>
+    /* =================== Thème (variables avec fallbacks) =================== */
+    :root{
+      --brand:#1f8f4e;           /* vert principal */
+      --brand-dark:#17603a;      /* vert foncé (colonne titre) */
+      --text:#1e2a32;            /* texte par défaut */
+      --muted:#5a6a72;           /* texte/ico atténué */
+      --surface:#ffffff;         /* fond */
+      --surface-2:#f3f6f8;       /* fond panneau droit */
+      --hover:#f4f4f4;           /* hover items menu */
+      --flyout-hover:#e8eef2;    /* hover items flyout */
+      --border:#e0e0e0;          /* bordures */
+    }
+
+    /* Reset hyperliens (look “ligne cliquable”, pas de souligné ni violet) */
+    a{ color:inherit; text-decoration:none; }
+    a:visited{ color:inherit; }
+    a:hover{ text-decoration:none; }
+
+    /* ===== Layout de base ===== */
+    html, body { margin:0; background:var(--surface); color:var(--text); font-family:Verdana, system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12pt; line-height:1.6; }
+    header.topbar { position:sticky; top:0; z-index:1000; background:#000; border-bottom:1px solid #1a1a1a; }
+    .topbar-inner { padding:10px 16px; display:flex; justify-content:center; }
+    .site-title { margin:0; color:#fff; font-weight:500; letter-spacing:1px; }
+
+    .app { display:flex; min-height:100vh; }
+    aside.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); padding:12px 0; position:sticky; top:0; height:100vh; overflow:auto; }
+    main.content { flex:1; padding:24px; }
+
+    /* ===== Menu gauche ===== */
+    .menu{ list-style:none; margin:0; padding:0; }
+    .menu li{ margin:2px 0; overflow:hidden; box-sizing:border-box; } /* clip des fonds actifs */
+    .menu li.has-flyout{ overflow:visible; } /* le panneau doit dépasser */
+
+    .item, .group-trigger{
+      display:flex; align-items:center; gap:12px;
+      width:100%; padding:10px 16px; border-left:4px solid transparent;
+      background:transparent; color:var(--text); cursor:pointer; text-align:left; border:0; font:inherit;
+    }
+    .item:hover, .group-trigger:hover{ background:var(--hover); }
+    .item.active{ background:var(--brand); color:#fff; border-left-color:#156d3b; font-weight:600; }
+
+    .icon{ width:18px; height:18px; flex:0 0 18px; display:inline-block; color:var(--muted); }
+    .label{ flex:1; }
+    .chevron{ margin-left:auto; color:var(--muted); }
+    li.has-flyout.open > .group-trigger .chevron{ transform:rotate(90deg); }
+
+    /* ===== Panneau .expandedMenu à droite (2 colonnes) ===== */
+    li.has-flyout{ position:relative; }
+    li.has-flyout > .expandedMenu{
+      position:absolute; top:0; left:calc(100% - 2px);
+      width:520px; background:var(--surface); border:1px solid var(--border); border-radius:8px;
+      box-shadow:0 10px 24px rgba(0,0,0,.12);
+      display:none; z-index:9999; overflow:hidden;
+    }
+    li.has-flyout.open > .expandedMenu{ display:block; }
+
+    /* Grille stricte 50/50 + anti-débordement + pads identiques */
+    .expandedMenu{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .expandedMenu .subMenuTitle{ background:var(--brand-dark); color:#fff; padding:16px; display:flex; align-items:center; font-weight:700; min-width:0; }
+    .expandedMenu > div:not(.subMenuTitle){ background:var(--surface-2); padding:16px; border-left:1px solid var(--border); min-width:0; }
+
+    /* Items du panneau (propre, sans look hyperlien) */
+    .expandedMenu a.depth0{ display:flex; align-items:center; gap:10px; padding:8px 0; color:var(--text); border-left:3px solid transparent; }
+    .expandedMenu a.depth0:hover{ background:transparent; }
+    .expandedMenu a.depth0.active, .expandedMenu a.depth0[aria-current="page"]{ color:var(--brand); font-weight:600; }
+
+    /* Mobile : panneau en dessous (1 colonne) */
+    @media (max-width:700px){
+      .app{ flex-direction:column; }
+      aside.sidebar{ width:100%; position:static; height:auto; }
+      li.has-flyout > .expandedMenu{ position:static; width:auto; border:0; box-shadow:none; margin-left:20px; display:block; }
+      .expandedMenu{ grid-template-columns:1fr; }
+      .expandedMenu > div:not(.subMenuTitle){ border-left:0; }
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" aria-label="Menu">
-    <ul class="menu">
-      <li><a class="item" href="/tableau-de-bord/"><span class="icon">🏠</span><span class="label">Tableau de bord</span></a></li>
-      <li><a class="item" href="/actualites-ccn/"><span class="icon">📄</span><span class="label">Actualités CCN</span></a></li>
-      <li><a class="item" href="/astuces-romain/"><span class="icon">🔑</span><span class="label">Les astuces de Romain</span></a></li>
-      <li><a class="item active" href="/cuisine-cc/"><span class="icon">🍳</span><span class="label">Cuisine CC</span></a></li>
-      <li class="has-flyout">
-        <button class="group-trigger" aria-haspopup="true" aria-expanded="false" type="button"><span class="icon">📘</span><span class="label">Simulateur</span><span class="chevron">▸</span></button>
-        <div class="flyout-panel" role="menu" aria-label="Sous-menu Simulateur">
-          <div class="flyout-grid">
-            <div class="flyout-header">Simulateur</div>
-            <div class="flyout-body">
-              <ul class="flyout-list">
-                <li><a class="flyout-link" href="/simulateur/retraite/">Indemnité de départ à la retraite</a></li>
-                <li><a class="flyout-link" href="/simulateur/divers/">Divers</a></li>
-              </ul>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner"><h1 class="site-title">Bibliothèque de l'équipe CC</h1></div>
+  </header>
+
+  <div class="app">
+    <aside class="sidebar" role="navigation" aria-label="Menu latéral">
+      <ul class="menu">
+        <li>
+          /tableau-de-bord/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon fill="currentColor" points="12,3 3,10 5,10 5,20 10,20 10,14 14,14 14,20 19,20 19,10 21,10"/></svg>
+            <span class="label">Tableau de bord</span>
+          </a>
+        </li>
+        <li>
+          /actualites-ccn/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="14" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="7" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2"/><line x1="7" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/><line x1="7" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="label">Actualités CCN</span>
+          </a>
+        </li>
+        <li>
+          /astuces-romain/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><rect x="10.5" y="12" width="3" height="6" fill="currentColor"/><rect x="9" y="19" width="6" height="2" rx="1" fill="currentColor"/></svg>
+            <span class="label">Les astuces de Romain</span>
+          </a>
+        </li>
+        <li>
+          /cuisine-cc/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="2" height="10" fill="currentColor"/><rect x="10" y="4" width="2" height="10" fill="currentColor"/><rect x="14" y="7" width="2" height="7" fill="currentColor"/><rect x="8" y="16" width="8" height="2" fill="currentColor"/></svg>
+            <span class="label">Cuisine CC</span>
+          </a>
+        </li>
+
+        <!-- ===== GROUPE SIMULATEUR (.expandedMenu) ===== -->
+        <li class="has-flyout">
+          <button class="group-trigger" aria-haspopup="true" aria-expanded="false" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="7" width="8" height="2" fill="currentColor"/><rect x="8" y="11" width="8" height="2" fill="currentColor"/><rect x="8" y="15" width="4" height="2" fill="currentColor"/></svg>
+            <span class="label">Simulateur</span>
+            <span class="chevron" aria-hidden="true">▸</span>
+          </button>
+
+          <div class="expandedMenu" role="menu" aria-label="Sous-menu Simulateur">
+            <div class="subMenuTitle">Simulateur</div>
+            <div>
+              /simulateur/retraite/<span>Indemnité de départ à la retraite</span></a>
+              /simulateur/divers/<span>Divers</span></a>
             </div>
           </div>
-        </div>
-      </li>
-    </ul>
-  </aside>
-  <main class="content">{{ content }}</main>
-</div>
-<script>(function(){document.querySelectorAll('li.has-flyout').forEach(g=>{const t=g.querySelector('.group-trigger'),p=g.querySelector('.flyout-panel');if(!t||!p)return;const o=()=>{g.classList.add('open');t.setAttribute('aria-expanded','true')},c=()=>{g.classList.remove('open');t.setAttribute('aria-expanded','false')};t.addEventListener('click',e=>{e.preventDefault();g.classList.contains('open')?c():o()});document.addEventListener('click',e=>{if(!g.contains(e.target))c()});g.addEventListener('keydown',e=>{if(e.key==='Escape')c()});});})();</script>
+        </li>
+        <!-- ===== /GROUPE SIMULATEUR ===== -->
+
+        <li>
+          /dsn/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="8" width="10" height="2" fill="currentColor"/><rect x="7" y="12" width="6" height="2" fill="currentColor"/></svg>
+            <span class="label">DSN</span>
+          </a>
+        </li>
+        <li>
+          /modules/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="6" height="6" fill="currentColor"/><rect x="13" y="5" width="6" height="6" fill="currentColor"/><rect x="5" y="13" width="6" height="6" fill="currentColor"/><rect x="13" y="13" width="6" height="6" fill="currentColor"/></svg>
+            <span class="label">Modules</span>
+          </a>
+        </li>
+        <li>
+          /etats-declarations/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="3" height="8" fill="currentColor"/><rect x="10.5" y="7" width="3" height="11" fill="currentColor"/><rect x="16" y="4" width="3" height="14" fill="currentColor"/></svg>
+            <span class="label">États et déclarations</span>
+          </a>
+        </li>
+        <li>
+          /etats-controle/
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="6" width="3" height="3" fill="currentColor"/><line x1="10" y1="7.5" x2="19" y2="7.5" stroke="currentColor" stroke-width="2"/><rect x="5" y="11" width="3" height="3" fill="currentColor"/><line x1="10" y1="12.5" x2="19" y2="12.5" stroke="currentColor" stroke-width="2"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/><line x1="10" y1="17.5" x2="19" y2="17.5" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="label">États de contrôle</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="content" role="main">{{ content }}</main>
+  </div>
+
+  <script>
+    // Toggle au clic + fermeture clic extérieur + Échap + support .expandedMenu
+    (function(){
+      document.querySelectorAll('li.has-flyout').forEach(group => {
+        const trigger = group.querySelector('.group-trigger');
+        const panel   = group.querySelector('.expandedMenu');
+        if (!trigger || !panel) return; // structure manquante
+
+        const open  = () => { group.classList.add('open');  trigger.setAttribute('aria-expanded','true'); };
+        const close = () => { group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
+
+        trigger.addEventListener('click', function(e){
+          e.preventDefault();
+          group.classList.contains('open') ? close() : open();
+        });
+
+        document.addEventListener('click', function(e){ if (!group.contains(e.target)) close(); });
+        group.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+
+        // Ouvre si un lien interne est actif
+        if (panel.querySelector('a.active,[aria-current="page"]')) open();
+      });
+    })();
+  </script>
 </body>
 </html>
