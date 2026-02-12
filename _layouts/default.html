@@ -66,6 +66,34 @@
   overflow-y: auto;
   overflow-x: visible; /* <-- clé pour voir le panneau à droite */
 }
+    /* 1) Le panneau ne doit pas être rogné par la colonne gauche */
+aside.sidebar {
+  overflow-y: auto;
+  overflow-x: visible !important; /* clé pour voir le panneau à droite */
+}
+
+/* 2) Aucun parent ne doit rogner l'horizontal (au cas où un thème l'aurait mis) */
+.app, .site, body {
+  overflow-x: visible !important;
+}
+
+/* 3) Ouvre le panneau .expandedMenu quand .open est posé (priorité maximale) */
+li.has-flyout.open > .expandedMenu {
+  display: block !important;
+  z-index: 99999 !important;     /* au-dessus de tout */
+  left: calc(100% - 2px) !important; /* collé à droite */
+}
+
+/* 4) Sur mobile, on replie le panneau sous l’item */
+@media (max-width: 700px) {
+  li.has-flyout > .expandedMenu {
+    position: static !important;
+    width: auto !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -171,5 +199,46 @@
       });
     })();
   </script>
+  <script>
+/* A) Sous-menu au clic (.group-trigger -> .expandedMenu) */
+(function () {
+  document.querySelectorAll('li.has-flyout').forEach(group => {
+    const trigger = group.querySelector('.group-trigger');
+    const panel   = group.querySelector('.expandedMenu');
+    if (!trigger || !panel) return;
+
+    const open  = () => { group.classList.add('open');  trigger.setAttribute('aria-expanded','true'); };
+    const close = () => { group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
+
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      group.classList.contains('open') ? close() : open();
+    });
+
+    /* Fermer au clic extérieur */
+    document.addEventListener('click', (e) => {
+      if (!group.contains(e.target)) close();
+    });
+
+    /* Option : ouvrir si un lien interne est marqué actif */
+    if (panel.querySelector('a.active,[aria-current="page"]')) open();
+  });
+})();
+
+/* B) Fix "vert bloqué" : calcule l'item actif selon l’URL réelle */
+(function () {
+  var path = window.location.pathname.replace(/\/+$/, '') || '/';
+  document.querySelectorAll('.menu > li > a.item').forEach(a => {
+    var href = (a.getAttribute('href') || '').replace(/\/+$/, '');
+    if (!href) return;
+    if (href === '' || href === '#') return;
+
+    /* On considère actif si la page courante commence par le href.
+       Exemple : /cuisine-cc/ active /cuisine-cc/recettes/ */
+    var isActive = (path === href) || (href !== '/' && path.indexOf(href) === 0);
+    a.classList.toggle('active', isActive);
+  });
+})();
+</script>
 </body>
 </html>
