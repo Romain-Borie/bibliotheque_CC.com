@@ -5,172 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page.title | escape }}</title>
   <style>
-    /* =================== Thème (modifiable) =================== */
     :root{
-      --brand: #1f8f4e;           /* vert principal */
-      --brand-dark: #17603a;      /* vert plus soutenu (entête flyout) */
-      --text: #1e2a32;            /* texte par défaut */
-      --muted: #5a6a72;           /* icônes / texte atténué */
-      --surface: #ffffff;         /* fond cartes */
-      --surface-2: #f3f6f8;       /* fond panneau droit */
-      --hover: #f4f4f4;           /* hover items menu */
-      --flyout-hover: #e8eef2;    /* hover items flyout */
-      --border: #e0e0e0;          /* bordures légères */
+      --brand:#1f8f4e; --brand-dark:#17603a; --text:#1e2a32; --muted:#5a6a72;
+      --surface:#fff; --surface-2:#f3f6f8; --hover:#f4f4f4; --flyout-hover:#e8eef2; --border:#e0e0e0;
     }
+    a{color:inherit;text-decoration:none} a:visited{color:inherit} a:hover{text-decoration:none}
+    html,body{margin:0;background:var(--surface);color:var(--text);font-family:Verdana,system-ui,-apple-system,Segoe UI,Roboto,Arial;font-size:12pt;line-height:1.6}
+    header.topbar{position:sticky;top:0;z-index:1000;background:#000;border-bottom:1px solid #1a1a1a}
+    .topbar-inner{padding:10px 16px;display:flex;justify-content:center}
+    .site-title{margin:0;color:#fff;font-weight:500;letter-spacing:1px}
+    .app{display:flex;min-height:100vh}
+    aside.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:12px 0;position:sticky;top:0;height:100vh;overflow:auto}
+    main.content{flex:1;padding:24px 18px 56px}
 
-    /* ===== Reset hyperliens (pas de violet/souligné) ===== */
-    a { color: inherit; text-decoration: none; }
-    a:visited { color: inherit; }
-    a:hover { text-decoration: none; }
+    /* clipping fix for active background */
+    aside.sidebar,.menu,.menu li,.item,.group-trigger{box-sizing:border-box}
+    .menu li{overflow:hidden}
+    .menu li.has-flyout{overflow:visible}
 
-    /* ===== Base ===== */
-    html, body { margin:0; background:var(--surface); color:var(--text); font-family:Verdana, system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12pt; line-height:1.6; }
-    header.topbar { position:sticky; top:0; z-index:1000; background:#000; border-bottom:1px solid #1a1a1a; }
-    .topbar-inner { padding:10px 16px; display:flex; justify-content:center; }
-    .site-title { margin:0; color:#fff; font-weight:500; letter-spacing:1px; }
+    .menu{list-style:none;margin:0;padding:0}
+    .menu li{margin:2px 0}
+    .item,.group-trigger{display:flex;align-items:center;gap:12px;width:100%;max-width:100%;padding:10px 16px;border-left:4px solid transparent;background:transparent;color:var(--text);cursor:pointer;text-align:left;border:0;font:inherit;border-radius:0}
+    .item:hover,.group-trigger:hover{background:var(--hover)}
+    .item.active{background:var(--brand);color:#fff;border-left-color:#156d3b;font-weight:600}
+    .icon{width:18px;height:18px;flex:0 0 18px;display:inline-block;color:var(--muted)}
+    .item.active .icon,.group-trigger.active .icon{color:#fff}
+    .label{flex:1}
+    .chevron{margin-left:auto;color:var(--muted)}
+    li.has-flyout.open>.group-trigger .chevron{transform:rotate(90deg)}
 
-    /* ===== Layout ===== */
-    .app { display:flex; min-height:100vh; }
-    aside.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); padding:12px 0; position:sticky; top:0; height:100vh; overflow:auto; }
-    main.content { flex:1; padding:24px 18px 56px; }
+    li.has-flyout{position:relative}
+    .flyout-panel{position:absolute;top:0;left:calc(100% - 2px);width:520px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.12);display:none;z-index:9999;overflow:hidden}
+    li.has-flyout.open>.flyout-panel{display:block}
 
-    /* ===== Menu principal ===== */
-    .menu { list-style:none; margin:0; padding:0; }
-    .menu li { margin:2px 0; }
-    .item, .group-trigger { 
-      display:flex; align-items:center; gap:12px; width:100%;
-      padding:10px 16px; border-left:4px solid transparent; background:transparent; color:var(--text);
-      cursor:pointer; text-align:left; border:0; font:inherit; border-radius:0;
-    }
-    .item:hover, .group-trigger:hover { background:var(--hover); }
-    .item.active { background:var(--brand); color:#fff; border-left-color:#156d3b; font-weight:600; }
+    /* Deux colonnes de même largeur */
+    .flyout-grid{display:grid;grid-template-columns:1fr 1fr}
+    .flyout-header{background:var(--brand-dark);color:#fff;padding:16px;display:flex;align-items:center;font-weight:700}
+    .flyout-body{background:var(--surface-2);padding:8px 0}
 
-    /* Icônes */
-    .icon { width:18px; height:18px; flex:0 0 18px; display:inline-block; color:var(--muted); }
-    .item.active .icon, .group-trigger.active .icon { color:#fff; }
-    .label { flex:1; }
-    .chevron { margin-left:auto; color:var(--muted); }
-    li.has-flyout.open > .group-trigger .chevron { transform: rotate(90deg); }
+    .flyout-list{list-style:none;margin:0;padding:0}
+    .flyout-list li{margin:0}
+    .flyout-link{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);border-left:3px solid transparent}
+    .flyout-link:hover{background:var(--flyout-hover)}
+    .flyout-link.active{background:var(--brand);color:#fff;border-left-color:#156d3b;font-weight:600}
 
-    /* ===== Flyout panneau 2 colonnes ===== */
-    li.has-flyout { position:relative; }
-    .flyout-panel { position:absolute; top:0; left:calc(100% - 2px); width: 480px; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:0 10px 24px rgba(0,0,0,.12); display:none; z-index:9999; overflow:hidden; }
-    li.has-flyout.open > .flyout-panel { display:block; }
+    nav,aside,.sidebar,.site-nav,.nav,.menu{overflow:visible!important}
 
-    .flyout-grid { display:grid; grid-template-columns: 1fr 1.4fr; }
-    .flyout-header { background:var(--brand-dark); color:#fff; padding:16px; display:flex; align-items:center; font-weight:700; }
-    .flyout-body   { background:var(--surface-2); padding:8px 0; }
-
-    .flyout-list { list-style:none; margin:0; padding:0; }
-    .flyout-list li { margin:0; }
-    .flyout-link { display:flex; align-items:center; gap:10px; padding:10px 16px; color:var(--text); border-left:3px solid transparent; }
-    .flyout-link:hover { background:var(--flyout-hover); }
-    .flyout-link.active { background:var(--brand); color:#fff; border-left-color:#156d3b; font-weight:600; }
-
-    /* Sécurité anti-clipping (thèmes Jekyll) */
-    nav, aside, .sidebar, .site-nav, .nav, .menu { overflow: visible !important; }
-
-    /* ===== Mobile ===== */
     @media (max-width:700px){
-      .app { flex-direction:column; }
-      aside.sidebar { width:100%; position:static; height:auto; }
-      .flyout-panel { position:static; width:auto; border:0; box-shadow:none; margin-left:20px; display:block; }
-      .flyout-grid { grid-template-columns: 1fr; }
-      .flyout-body { background:#fff; padding-top:0; }
+      .app{flex-direction:column}
+      aside.sidebar{width:100%;position:static;height:auto}
+      .flyout-panel{position:static;width:auto;border:0;box-shadow:none;margin-left:20px;display:block}
+      .flyout-grid{grid-template-columns:1fr}
+      .flyout-body{background:#fff;padding-top:0}
     }
-    /* 1) Assure un calcul de largeur “contenu + padding + bordure” */
-aside.sidebar,
-.menu,
-.menu li,
-.item,
-.group-trigger { box-sizing: border-box; }
-
-/* 2) Chaque ligne clippe son propre fond (évite les débordements) */
-.menu li { 
-  overflow: hidden;         /* coupe le fond de l’item actif à 100% de la colonne */
-}
-
-/* 3) …sauf le groupe qui possède un flyout : on le laisse dépasser vers la droite */
-.menu li.has-flyout { 
-  overflow: visible;        /* nécessaire pour le panneau à droite */
-}
-
-/* 4) Sécurité : l’item occupe exactement la largeur de la colonne */
-.item, .group-trigger {
-  display: flex;
-  width: 100%;
-  max-width: 100%;
-}
-
-/* 5) (optionnel) Rayons pour un rendu plus propre quand actif */
-.item.active,
-.group-trigger.active { 
-  border-radius: 4px 0 0 4px;
-}
   </style>
 </head>
 <body>
   <header class="topbar" role="banner">
     <div class="topbar-inner"><h1 class="site-title">Bibliothèque de l'équipe CC</h1></div>
   </header>
-
   <div class="app">
     <aside class="sidebar" role="navigation" aria-label="Menu latéral">
       <ul class="menu">
         <li>
           <a class="item {% if page.url == '/' or page.url contains '/tableau-de-bord/' %}active{% endif %}" href="/tableau-de-bord/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon fill="currentColor" points="12,3 3,10 5,10 5,20 10,20 10,14 14,14 14,20 19,20 19,10 21,10"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon fill="currentColor" points="12,3 3,10 5,10 5,20 10,20 10,14 14,14 14,20 19,20 19,10 21,10"/></svg>
             <span class="label">Tableau de bord</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/actualites-ccn/' %}active{% endif %}" href="/actualites-ccn/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="4" width="14" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-              <line x1="7" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2"/>
-              <line x1="7" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>
-              <line x1="7" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="14" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="7" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2"/><line x1="7" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/><line x1="7" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2"/></svg>
             <span class="label">Actualités CCN</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/astuces-romain/' %}active{% endif %}" href="/astuces-romain/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="8" r="3.5" fill="currentColor"/>
-              <rect x="10.5" y="12" width="3" height="6" fill="currentColor"/>
-              <rect x="9" y="19" width="6" height="2" rx="1" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><rect x="10.5" y="12" width="3" height="6" fill="currentColor"/><rect x="9" y="19" width="6" height="2" rx="1" fill="currentColor"/></svg>
             <span class="label">Les astuces de Romain</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/cuisine-cc/' %}active{% endif %}" href="/cuisine-cc/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="6" y="4" width="2" height="10" fill="currentColor"/>
-              <rect x="10" y="4" width="2" height="10" fill="currentColor"/>
-              <rect x="14" y="7" width="2" height="7" fill="currentColor"/>
-              <rect x="8" y="16" width="8" height="2" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="2" height="10" fill="currentColor"/><rect x="10" y="4" width="2" height="10" fill="currentColor"/><rect x="14" y="7" width="2" height="7" fill="currentColor"/><rect x="8" y="16" width="8" height="2" fill="currentColor"/></svg>
             <span class="label">Cuisine CC</span>
           </a>
         </li>
-
-        <!-- ===== ITEM AVEC PANNEAU 2 COLONNES (CLIC) ===== -->
         <li class="has-flyout">
           <button class="group-trigger" aria-haspopup="true" aria-expanded="false" type="button">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="3" width="14" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-              <rect x="8" y="7" width="8" height="2" fill="currentColor"/>
-              <rect x="8" y="11" width="8" height="2" fill="currentColor"/>
-              <rect x="8" y="15" width="4" height="2" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="7" width="8" height="2" fill="currentColor"/><rect x="8" y="11" width="8" height="2" fill="currentColor"/><rect x="8" y="15" width="4" height="2" fill="currentColor"/></svg>
             <span class="label">Simulateur</span>
             <span class="chevron" aria-hidden="true">▸</span>
           </button>
-
           <div class="flyout-panel" role="menu" aria-label="Sous-menu Simulateur">
             <div class="flyout-grid">
               <div class="flyout-header">Simulateur</div>
@@ -193,79 +119,30 @@ aside.sidebar,
             </div>
           </div>
         </li>
-        <!-- ===== /ITEM AVEC PANNEAU ===== -->
-
         <li>
           <a class="item {% if page.url contains '/dsn/' %}active{% endif %}" href="/dsn/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-              <rect x="7" y="8" width="10" height="2" fill="currentColor"/>
-              <rect x="7" y="12" width="6" height="2" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="8" width="10" height="2" fill="currentColor"/><rect x="7" y="12" width="6" height="2" fill="currentColor"/></svg>
             <span class="label">DSN</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/modules/' %}active{% endif %}" href="/modules/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="5" width="6" height="6" fill="currentColor"/>
-              <rect x="13" y="5" width="6" height="6" fill="currentColor"/>
-              <rect x="5" y="13" width="6" height="6" fill="currentColor"/>
-              <rect x="13" y="13" width="6" height="6" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="6" height="6" fill="currentColor"/><rect x="13" y="5" width="6" height="6" fill="currentColor"/><rect x="5" y="13" width="6" height="6" fill="currentColor"/><rect x="13" y="13" width="6" height="6" fill="currentColor"/></svg>
             <span class="label">Modules</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/etats-declarations/' %}active{% endif %}" href="/etats-declarations/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="10" width="3" height="8" fill="currentColor"/>
-              <rect x="10.5" y="7" width="3" height="11" fill="currentColor"/>
-              <rect x="16" y="4" width="3" height="14" fill="currentColor"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="3" height="8" fill="currentColor"/><rect x="10.5" y="7" width="3" height="11" fill="currentColor"/><rect x="16" y="4" width="3" height="14" fill="currentColor"/></svg>
             <span class="label">États et déclarations</span>
           </a>
         </li>
         <li>
           <a class="item {% if page.url contains '/etats-controle/' %}active{% endif %}" href="/etats-controle/">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="6" width="3" height="3" fill="currentColor"/>
-              <line x1="10" y1="7.5" x2="19" y2="7.5" stroke="currentColor" stroke-width="2"/>
-              <rect x="5" y="11" width="3" height="3" fill="currentColor"/>
-              <line x1="10" y1="12.5" x2="19" y2="12.5" stroke="currentColor" stroke-width="2"/>
-              <rect x="5" y="16" width="3" height="3" fill="currentColor"/>
-              <line x1="10" y1="17.5" x2="19" y2="17.5" stroke="currentColor" stroke-width="2"/>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="6" width="3" height="3" fill="currentColor"/><line x1="10" y1="7.5" x2="19" y2="7.5" stroke="currentColor" stroke-width="2"/><rect x="5" y="11" width="3" height="3" fill="currentColor"/><line x1="10" y1="12.5" x2="19" y2="12.5" stroke="currentColor" stroke-width="2"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/><line x1="10" y1="17.5" x2="19" y2="17.5" stroke="currentColor" stroke-width="2"/></svg>
             <span class="label">États de contrôle</span>
           </a>
         </li>
       </ul>
     </aside>
-
-    <main class="content" role="main">
-      {{ content }}
-    </main>
-  </div>
-
-  <script>
-    // Toggle au clic + fermeture clic extérieur + Échap + ARIA
-    (function(){
-      document.querySelectorAll('li.has-flyout').forEach(group => {
-        const trigger = group.querySelector('.group-trigger');
-        const panel   = group.querySelector('.flyout-panel');
-        if (!trigger || !panel) return;
-
-        const open  = () => { group.classList.add('open');  trigger.setAttribute('aria-expanded','true'); };
-        const close = () => { group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
-
-        trigger.addEventListener('click', (e) => { e.preventDefault(); group.classList.contains('open') ? close() : open(); });
-        document.addEventListener('click', (e) => { if (!group.contains(e.target)) close(); });
-        group.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-
-        // Ouvre si un lien du panneau est actif
-        if (panel.querySelector('.flyout-link.active')) open();
-      });
-    })();
-  </script>
-</body>
-</html>
+    <main class="content" role="main">{{ content }}</
