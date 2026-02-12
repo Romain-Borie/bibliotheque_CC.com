@@ -78,6 +78,35 @@
       .flyout-grid { grid-template-columns: 1fr; }
       .flyout-body { background:#fff; padding-top:0; }
     }
+    /* 1) Assure un calcul de largeur “contenu + padding + bordure” */
+aside.sidebar,
+.menu,
+.menu li,
+.item,
+.group-trigger { box-sizing: border-box; }
+
+/* 2) Chaque ligne clippe son propre fond (évite les débordements) */
+.menu li { 
+  overflow: hidden;         /* coupe le fond de l’item actif à 100% de la colonne */
+}
+
+/* 3) …sauf le groupe qui possède un flyout : on le laisse dépasser vers la droite */
+.menu li.has-flyout { 
+  overflow: visible;        /* nécessaire pour le panneau à droite */
+}
+
+/* 4) Sécurité : l’item occupe exactement la largeur de la colonne */
+.item, .group-trigger {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 5) (optionnel) Rayons pour un rendu plus propre quand actif */
+.item.active,
+.group-trigger.active { 
+  border-radius: 4px 0 0 4px;
+}
   </style>
 </head>
 <body>
