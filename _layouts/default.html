@@ -43,6 +43,45 @@
       aside.sidebar { width:100%; border-right:0; border-bottom:1px solid #e0e0e0; height:auto; position:static; }
       .flyout { position:static; left:auto; top:auto; border:0; box-shadow:none; border-left:2px solid #eef2f7; margin-left:20px; }
     }
+    /* Parent du flyout */
+li.has-flyout { position: relative !important; }
+
+/* Sous-menu caché par défaut, affiché quand .open est présent */
+li.has-flyout > ul.flyout {
+  position: absolute !important;
+  top: 0 !important;
+  left: calc(100% - 2px) !important; /* à droite, collé */
+  min-width: 260px !important;
+  background: #fff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12) !important;
+  margin: 0 !important;
+  padding: 6px 0 !important;
+  list-style: none !important;
+  display: none !important;
+  z-index: 9999 !important; /* par-dessus tout */
+}
+
+/* OUVERTURE au clic (classe .open sur le <li>) */
+li.has-flyout.open > ul.flyout { display: block !important; }
+
+/* Sécurité anti-clipping sur les conteneurs fréquents des thèmes Jekyll */
+nav, aside, .sidebar, .site-nav, .nav, .menu { overflow: visible !important; }
+
+/* Mobile : replier sous l'item */
+@media (max-width: 700px) {
+  li.has-flyout > ul.flyout {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-left: 2px solid #eef2f7 !important;
+    margin-left: 20px !important;
+    display: block !important; /* visible au clic et plus pratique au doigt */
+  }
+}
   </style>
 </head>
 <body>
@@ -67,16 +106,15 @@
         </li>
 
         <!-- ITEM AVEC FLYOUT AU CLIC -->
-        <li class="has-flyout">
-          <button class="group-trigger" aria-haspopup="true" aria-expanded="false" type="button">
-            <span>Simulateur</span>
-            <span class="chevron" aria-hidden="true">▸</span>
-          </button>
-          <ul class="flyout" role="menu" aria-label="Sous-menu Simulateur">
-            <li role="none"><a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/retraite/' %}active{% endif %}" href="{{ '/simulateur/retraite/' | relative_url }}" role="menuitem" {% if page.url contains '/simulateur/retraite/' %}aria-current="page"{% endif %}>Indemnité de départ à la retraite</a></li>
-            <li role="none"><a class="sc-fqkvVR dMxrQl {% if page.url contains '/simulateur/divers/' %}active{% endif %}" href="{{ '/simulateur/divers/' | relative_url }}" role="menuitem" {% if page.url contains '/simulateur/divers/' %}aria-current="page"{% endif %}>Divers</a></li>
-          </ul>
-        </li>
+
+<li class="has-flyout">
+  <button class="group-trigger" aria-haspopup="true" aria-expanded="false" type="button">Simulateur<span class="chevron">▸</span></button>
+  <ul class="flyout" role="menu">
+    <li role="none"><a href="/simulateur/retraite/">Indemnité de départ à la retraite</a></li>
+    <li role="none"><a href="/simulateur/divers/">Divers</a></li>
+  </ul>
+</li>
+
         <!-- /ITEM AVEC FLYOUT AU CLIC -->
 
         <li>
@@ -99,29 +137,34 @@
     </main>
   </div>
 
-  <script>
-    // Toggle au clic + fermeture clic extérieur + Échap + ARIA sync
-    document.querySelectorAll('.has-flyout').forEach(group => {
-      const trigger = group.querySelector('.group-trigger');
-      const flyout  = group.querySelector('.flyout');
+<script>
+document.querySelectorAll('li.has-flyout').forEach(group => {
+  const trigger = group.querySelector('.group-trigger'); // ton <button>
+  const flyout  = group.querySelector('.flyout');
 
-      const open = () => { group.classList.add('open'); trigger.setAttribute('aria-expanded','true'); };
-      const close = () => { group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
+  // Si le déclencheur n'est pas trouvé, on sort
+  if (!trigger || !flyout) return;
 
-      trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        group.classList.contains('open') ? close() : open();
-      });
+  const open  = () => { group.classList.add('open');  trigger.setAttribute('aria-expanded','true');  };
+  const close = () => { group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); };
 
-      document.addEventListener('click', (e) => {
-        if (!group.contains(e.target)) close();
-      });
+  // Toggle au clic
+  trigger.addEventListener('click', (e) => {
+    e.preventDefault();
+    group.classList.contains('open') ? close() : open();
+  });
 
-      group.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  // Clic extérieur -> fermeture
+  document.addEventListener('click', (e) => {
+    if (!group.contains(e.target)) close();
+  });
 
-      // Au chargement : ouvrir si un lien est actif
-      if (flyout.querySelector('a.active')) open();
-    });
-  </script>
+  // Échap -> fermeture
+  group.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  // Ouvre au chargement si un lien du flyout est actif (optionnel)
+  if (flyout.querySelector('a.active')) open();
+});
+</script>
 </body>
 </html>
