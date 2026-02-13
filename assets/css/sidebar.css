@@ -357,3 +357,32 @@ li.has-flyout.open > .expandedMenu{ display:block; }
 
 /* Debug temporaire : voir le contour quand ouvert (retire ensuite) */
 .has-flyout.open > .expandedMenu { outline: 2px dashed #1f8f4e; }
+
+
+/* --- Harmonisation : la barre .subMenuTitle comme un item de niveau 1 --- */
+.sidebar .expandedMenu .subMenuTitle{
+  /* Couleurs identiques à l'item actif */
+  background: var(--brand-dark);
+  color: #fff;
+
+  /* Gabarit identique à .item / .group-trigger */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;            /* comme .item */
+  line-height: 1.6;              /* même line-height que le site */
+  font: inherit;                 /* même police (hérite de body) */
+  font-weight: 600;              /* même poids que .item.active */
+
+  /* Layout interne propre */
+  min-height: 42px;              /* garde une hauteur visuelle stable */
+  border-bottom: 1px solid rgba(0,0,0,.06); /* fin séparateur optionnel */
+}
+
+/* Petit chevron blanc à gauche (option cosmétique) */
+.sidebar .expandedMenu .subMenuTitle::before{
+  content: "▸";
+  margin-right: 8px;
+  font-weight: 700;
+  opacity: .85;
+}
