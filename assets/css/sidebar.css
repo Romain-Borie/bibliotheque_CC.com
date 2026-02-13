@@ -316,3 +316,44 @@ li.has-flyout.open > .expandedMenu{ display:block; }
 .sidebar .has-flyout.open .group-trigger .chevron { 
   transform: rotate(90deg); 
 }
+/* === PATCH : flyout à droite (avec surclassements robustes) === */
+
+/* Masquer par défaut */
+.sidebar .has-flyout > .expandedMenu { 
+  display: none; 
+  position: absolute !important; 
+  left: calc(100% - 2px); 
+  top: 0;
+  width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  z-index: 4000;                 /* au-dessus du contenu */
+  overflow: hidden;
+}
+
+/* Afficher en état ouvert (deux déclencheurs possibles) */
+.sidebar .has-flyout.open > .expandedMenu,
+.sidebar .has-flyout .group-trigger[aria-expanded="true"] + .expandedMenu {
+  display: block !important;
+}
+
+/* Anti-clipping : s'assurer que les parents ne masquent pas */
+.sidebar, 
+.sidebar .menu, 
+.sidebar .menu li.has-flyout { 
+  overflow: visible !important;
+}
+
+/* Si malgré tout le panneau part hors écran à droite,
+   tu peux utiliser RIGHT plutôt que LEFT (choisis l'un OU l'autre) */
+/*
+.sidebar .has-flyout > .expandedMenu {
+  left: auto !important;
+  right: -2px !important;
+}
+*/
+
+/* Debug temporaire : voir le contour quand ouvert (retire ensuite) */
+.has-flyout.open > .expandedMenu { outline: 2px dashed #1f8f4e; }
