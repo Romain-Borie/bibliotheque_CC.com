@@ -1,3 +1,5 @@
+/* TEST TEMPORAIRE — à supprimer après */
+html body { outline: 6px solid magenta !important; }
 :root{
   --brand:#1f8f4e; --brand-dark:#17603a; --text:#1e2a32; --muted:#5a6a72;
   --surface:#ffffff; --surface-2:#f3f6f8; --hover:#f4f4f4; --flyout-hover:#e8eef2; --border:#e0e0e0;
