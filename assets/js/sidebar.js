@@ -84,3 +84,39 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('[sidebar] active-state error:', err);
   }
 });
+
+/* === PATCH ROBUSTESSE SOUS-MENU (forcer l'affichage) === */
+
+/* 1) Cacher par défaut */
+.sidebar .has-flyout > .expandedMenu {
+  display: none;
+}
+
+/* 2) Afficher quand le <li> est ouvert (le JS ajoute .open) */
+.sidebar .has-flyout.open > .expandedMenu {
+  display: block;
+}
+
+/* 3) Afficher quand le bouton est aria-expanded="true" */
+.sidebar .has-flyout .group-trigger[aria-expanded="true"] + .expandedMenu {
+  display: block;
+}
+
+/* 4) Aide au debug : voir le panneau et être sûr qu'il n'est pas rogné */
+.sidebar .has-flyout.open > .expandedMenu {
+  outline: 2px dashed #1f8f4e;     /* Debug visuel — à retirer après */
+}
+
+/* 5) Anti-clipping : s'assurer que le parent ne rogne pas */
+.sidebar .menu li.has-flyout { 
+  overflow: visible !important;     /* plus spécifique que `li.has-flyout` seul */
+}
+
+/* 6) Si le panneau sort trop à droite, proposer une alternative "sous l'item" :
+      (décommente ces 4 lignes pour tester si tu ne vois toujours rien) */
+/*
+.sidebar .has-flyout > .expandedMenu {
+  position: static !important;      /* s'affiche sous l'item au lieu d'être à droite */
+  width: auto !important;
+}
+*/
