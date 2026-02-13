@@ -119,4 +119,4 @@ document.addEventListener('DOMContentLoaded', () => {
   position: static !important;      /* s'affiche sous l'item au lieu d'être à droite */
   width: auto !important;
 }
-*/
+*/;
