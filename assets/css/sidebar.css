@@ -72,3 +72,41 @@ li.has-flyout.open > .expandedMenu{ display:block; }
   .expandedMenu{ grid-template-columns:1fr; }
   .expandedMenu > div:not(.subMenuTitle){ border-left:0; }
 }
+
+/* Sous-menu caché par défaut */
+.sidebar .has-flyout .expandedMenu {
+  display: none;
+  padding: 8px 12px 10px;
+}
+
+/* Variante accessible : on affiche quand aria-expanded="true" sur le bouton */
+.sidebar .has-flyout .group-trigger[aria-expanded="true"] + .expandedMenu {
+  display: block;
+}
+
+/* (Option) Si tu préfères une classe "open" sur le <li> parent */
+.sidebar .has-flyout.open .expandedMenu {
+  display: block;
+}
+
+/* Petite rotation du chevron quand ouvert */
+.sidebar .has-flyout .group-trigger .chevron {
+  display: inline-block;
+  transition: transform 0.15s ease-in-out;
+}
+.sidebar .has-flyout .group-trigger[aria-expanded="true"] .chevron,
+.sidebar .has-flyout.open .group-trigger .chevron {
+  transform: rotate(90deg);
+}
+
+/* Style du sous-menu (exemple) */
+.sidebar .expandedMenu .subMenuTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 4px 0 6px;
+}
+.sidebar .expandedMenu a.depth0 {
+  display: block;
+  padding: 6px 0;
+}
+
