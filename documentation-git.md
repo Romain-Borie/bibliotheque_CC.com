@@ -1,3 +1,9 @@
+---
+layout: default
+title: Documentation Git
+permalink: /documentation-git/
+---
+
 # Documentation Git - Guide de Base
 
 ## Qu'est-ce que Git ?
