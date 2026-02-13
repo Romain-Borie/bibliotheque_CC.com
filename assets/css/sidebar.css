@@ -1,23 +1,35 @@
-/* TEST TEMPORAIRE — à supprimer après */
-html body { outline: 6px solid magenta !important; }
+/* === Palette & variables === */
 :root{
-  --brand:#1f8f4e; --brand-dark:#17603a; --text:#1e2a32; --muted:#5a6a72;
-  --surface:#ffffff; --surface-2:#f3f6f8; --hover:#f4f4f4; --flyout-hover:#e8eef2; --border:#e0e0e0;
+  --brand:#1f8f4e; 
+  --brand-dark:#17603a; 
+  --text:#1e2a32; 
+  --muted:#5a6a72;
+  --surface:#ffffff; 
+  --surface-2:#f3f6f8; 
+  --hover:#f4f4f4; 
+  --flyout-hover:#e8eef2; 
+  --border:#e0e0e0;
 }
 
-/* Reset liens */
+/* Reset liens (évite le violet/bleu) */
 a{ color:inherit; text-decoration:none; }
 a:visited{ color:inherit; }
 a:hover{ text-decoration:none; }
 
-/* Layout global (l'app est en 2 colonnes) */
+/* Layout principal : sidebar + contenu */
 .app{ display:flex; min-height:100vh; }
 
 /* === SIDEBAR === */
 .sidebar{
-  width:260px; background:var(--surface); border-right:1px solid var(--border);
-  padding:12px 0; position:sticky; top:0; height:100vh;
-  overflow-y:auto; overflow-x:visible !important; /* pour laisser sortir le panneau à droite */
+  width:260px; 
+  background:var(--surface); 
+  border-right:1px solid var(--border);
+  padding:12px 0; 
+  position:sticky; 
+  top:0; 
+  height:100vh;
+  overflow-y:auto; 
+  overflow-x:visible !important; /* pour laisser sortir le panneau à droite */
 }
 
 /* Zone de contenu */
@@ -30,15 +42,29 @@ a:hover{ text-decoration:none; }
 
 /* Liens et boutons de niveau 1 */
 .item, .group-trigger{
-  display:flex; align-items:center; gap:12px; width:100%;
-  padding:10px 16px; border-left:4px solid transparent;
-  background:transparent; color:var(--text); cursor:pointer;
-  text-align:left; border:0; font:inherit;
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+  width:100%;
+  padding:10px 16px; 
+  border-left:4px solid transparent;
+  background:transparent; 
+  color:var(--text); 
+  cursor:pointer;
+  text-align:left; 
+  border:0; 
+  font:inherit;
 }
 .item:hover, .group-trigger:hover{ background:var(--hover); }
+
+/* >>> ÉTAT ACTIF (le fameux “menu vert”) <<< */
 .item.active{
-  background:var(--brand); color:#fff; border-left-color:#156d3b; font-weight:600;
+  background:var(--brand); 
+  color:#fff; 
+  border-left-color:#156d3b; 
+  font-weight:600;
 }
+
 .icon{ width:18px; height:18px; flex:0 0 18px; display:inline-block; color:var(--muted); }
 .label{ flex:1; }
 .chevron{ margin-left:auto; color:var(--muted); }
@@ -47,9 +73,17 @@ li.has-flyout.open > .group-trigger .chevron{ transform:rotate(90deg); }
 /* === PANNEAU DU SOUS-MENU (à droite) === */
 li.has-flyout{ position:relative; }
 li.has-flyout > .expandedMenu{
-  position:absolute; top:0; left:calc(100% - 2px);
-  width:520px; background:var(--surface); border:1px solid var(--border); border-radius:8px;
-  box-shadow:0 10px 24px rgba(0,0,0,.12); display:none; z-index:3000; overflow:hidden;
+  position:absolute; 
+  top:0; 
+  left:calc(100% - 2px);
+  width:520px; 
+  background:var(--surface); 
+  border:1px solid var(--border); 
+  border-radius:8px;
+  box-shadow:0 10px 24px rgba(0,0,0,.12); 
+  display:none; 
+  z-index:3000; 
+  overflow:hidden;
 }
 /* Quand ouvert via la classe .open (le JS la pose aussi) */
 li.has-flyout.open > .expandedMenu{ display:block; }
@@ -57,47 +91,69 @@ li.has-flyout.open > .expandedMenu{ display:block; }
 /* Disposition interne du panneau */
 .expandedMenu{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); }
 .expandedMenu .subMenuTitle{
-  background:var(--brand-dark); color:#fff; padding:16px; display:flex; align-items:center; font-weight:700; min-width:0;
+  background:var(--brand-dark); 
+  color:#fff; 
+  padding:16px; 
+  display:flex; 
+  align-items:center; 
+  font-weight:700; 
+  min-width:0;
 }
 .expandedMenu > div:not(.subMenuTitle){
-  background:var(--surface-2); padding:16px; border-left:1px solid var(--border); min-width:0;
+  background:var(--surface-2); 
+  padding:16px; 
+  border-left:1px solid var(--border); 
+  min-width:0;
 }
 .expandedMenu a.depth0{
-  display:flex; align-items:center; gap:10px; padding:8px 0; color:var(--text); border-left:3px solid transparent;
+  display:flex; 
+  align-items:center; 
+  gap:10px; 
+  padding:8px 0; 
+  color:var(--text); 
+  border-left:3px solid transparent;
 }
 .expandedMenu a.depth0:hover{ background:transparent; }
-.expandedMenu a.depth0.active, .expandedMenu a.depth0[aria-current="page"]{ color:var(--brand); font-weight:600; }
+.expandedMenu a.depth0.active, 
+.expandedMenu a.depth0[aria-current="page"]{ 
+  color:var(--brand); 
+  font-weight:600; 
+}
 
 /* === Responsive : sous-menu sous l’item (mobile) === */
 @media (max-width:700px){
   .app{ flex-direction:column; }
   .sidebar{ width:100%; position:static; height:auto; }
-  li.has-flyout > .expandedMenu{ position:static; width:auto; border:0; box-shadow:none; margin-left:20px; display:block; }
+  li.has-flyout > .expandedMenu{ 
+    position:static; 
+    width:auto; 
+    border:0; 
+    box-shadow:none; 
+    margin-left:20px; 
+    display:block; 
+  }
   .expandedMenu{ grid-template-columns:1fr; }
   .expandedMenu > div:not(.subMenuTitle){ border-left:0; }
 }
-/* Sous-menu caché par défaut */
-.sidebar .has-flyout .expandedMenu {
-  display: none;
-  padding: 8px 12px 10px;
+
+/* === Affichage des sous-menus via aria-expanded (alternative/complément) === */
+.sidebar .has-flyout .expandedMenu { 
+  display: none; 
+  /* padding: 8px 12px 10px;  // (optionnel) si tu veux du padding générique */
+}
+.sidebar .has-flyout .group-trigger[aria-expanded="true"] + .expandedMenu { 
+  display: block; 
+}
+.sidebar .has-flyout.open .expandedMenu { 
+  display: block; 
 }
 
-/* Afficher quand aria-expanded="true" sur le bouton */
-.sidebar .has-flyout .group-trigger[aria-expanded="true"] + .expandedMenu {
-  display: block;
-}
-
-/* Ou via la classe .open sur <li> (le JS met les deux) */
-.sidebar .has-flyout.open .expandedMenu {
-  display: block;
-}
-
-/* Effet visuel sur le chevron quand ouvert */
-.sidebar .has-flyout .group-trigger .chevron {
-  display: inline-block;
-  transition: transform 0.15s ease-in-out;
+/* Effet visuel sur le chevron quand ouvert (ARIA ou .open) */
+.sidebar .has-flyout .group-trigger .chevron { 
+  display: inline-block; 
+  transition: transform 0.15s ease-in-out; 
 }
 .sidebar .has-flyout .group-trigger[aria-expanded="true"] .chevron,
-.sidebar .has-flyout.open .group-trigger .chevron {
-  transform: rotate(90deg);
+.sidebar .has-flyout.open .group-trigger .chevron { 
+  transform: rotate(90deg); 
 }
